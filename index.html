@@ -377,7 +377,7 @@ function vAdmin(){
    <label class="row small"><input type="checkbox" id="mail-best" ${(CFG.mail||{}).best===false?"":"checked"}> Nachbestellen</label>
    <label class="row small"><input type="checkbox" id="mail-exp" ${(CFG.mail||{}).exp===false?"":"checked"}> Verfall (abgelaufen / in 3 Monaten)</label>
    <div class="row"><button class="btn pri" data-act="mailsave">Speichern</button></div>
-   <span class="muted small">Damit die Mails verschickt werden, muss das Google-Skript einmal eingerichtet sein. Hinweis: Die Adressen liegen in der Lager-Datenbank, die jeder mit dem Link lesen kann.</span></div>
+   <span class="muted small">Geprüft wird stündlich. Die <b>erste</b> Adresse bekommt beim allerersten Mal eine Bestätigungsmail von FormSubmit – bitte dort auf „Activate“ klicken (auch nach einem Wechsel der ersten Adresse). Hinweis: Die Adressen liegen in der Lager-Datenbank, die jeder mit dem Link lesen kann.</span></div>
    <div class="editbar"><b>Buchungen zusammenfassen</b><span class="muted small">${BOOK.length} einzelne Buchungen gespeichert. Ab etwa 1500 sollten sie zusammengefasst werden: Bestände und Monatsstatistik bleiben erhalten, nur der Einzelverlauf wird gelöscht.</span><div class="row"><button class="btn" data-act="compact" ${BOOK.length?"":"disabled"}>Zusammenfassen</button></div></div>`;
   return h;
 }
@@ -554,7 +554,7 @@ document.addEventListener("click",async e=>{
   else if(a==="adm"){adm=t.dataset.v;render();scrollTo(0,0)}
   else if(a==="labdl")saveLabels();
   else if(a==="es")openEdit(t.dataset.k,t.dataset);
-  else if(a==="mailsave"){const raw=$("#mail-an").value.split(/[\s,;]+/).filter(Boolean),bad=raw.filter(x=>!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));if(bad.length){toast("Keine gültige Adresse: "+bad[0]);return}CFG.mail={an:raw.join(","),best:$("#mail-best").checked,exp:$("#mail-exp").checked};saveSoon();toast(raw.length?raw.length+" Empfänger gespeichert":"Gespeichert – Mails gehen an das Google-Konto des Skripts")}
+  else if(a==="mailsave"){const raw=$("#mail-an").value.split(/[\s,;]+/).filter(Boolean),bad=raw.filter(x=>!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));if(bad.length){toast("Keine gültige Adresse: "+bad[0]);return}CFG.mail={an:raw.join(","),best:$("#mail-best").checked,exp:$("#mail-exp").checked};saveSoon();toast(raw.length?raw.length+" Empfänger gespeichert":"Gespeichert – ohne Adresse werden keine Mails verschickt")}
   else if(a==="fstep"){keepSheet();const f=t.dataset.f;sheet.tmp[f]=Math.max(f==="soll"?1:0,(+sheet.tmp[f]||0)+ +t.dataset.d);drawSheet()}
   else if(a==="tcol"){keepSheet();sheet.tmp.col=t.dataset.c;drawSheet()}
   else if(a==="itemsave"){keepSheet();const m=sheet.tmp;if(!m.n.trim()){toast("Bitte eine Bezeichnung eingeben");return}const id=sheet.i||newId("a",CFG.items);CFG.items[id]={...(CFG.items[id]||{}),n:m.n.trim(),d:m.d.trim(),u:m.u.trim()||"Stk",c:m.c,min:+m.min||0,ziel:+m.ziel||0};sheet=null;drawSheet();saveSoon();toast("Gespeichert");render()}
