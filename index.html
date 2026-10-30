@@ -43,6 +43,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--accent);color:var(--accent-ink)}
 .hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-block:12px 4px}
 h1{font-family:var(--f-disp);font-weight:700;font-size:26px;letter-spacing:.02em;margin:0;text-transform:uppercase}
+.h1b{display:flex;align-items:baseline;gap:6px;background:none;border:0;color:inherit;padding:0;cursor:pointer;text-align:left;min-width:0}.h1b h1{overflow-wrap:anywhere}.caret{font-size:18px;opacity:.8}
 .ttl{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.ver{font-size:12px;opacity:.75;font-family:var(--f-num)}
 .sync{font-size:12px;opacity:.8}
 nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
@@ -212,7 +213,7 @@ body{margin:0}
 </style></head><body>
 
 <header><div class="wrap">
-  <div class="hd"><div class="ttl"><h1>San-Lager</h1><span class="ver" id="ver"></span></div><span class="sync" id="sync">verbinde …</span></div>
+  <div class="hd"><div class="ttl"><button class="h1b" data-act="apick" aria-label="Bereich wechseln"><h1 id="atitle">San-Lager</h1><span class="caret">▾</span></button><span class="ver" id="ver"></span></div><span class="sync" id="sync">verbinde …</span></div>
   <div class="areas" id="areas"></div>
   <nav id="tabs"></nav>
 </div></header>
@@ -234,7 +235,7 @@ const DB_URL="https://lager-52f88-default-rtdb.europe-west1.firebasedatabase.app
 const DEFAULT_CFG={"items": {"a01": {"n": "Einmalhandschuhe", "d": "Gr. S", "u": "VE", "min": 4, "c": "H"}, "a02": {"n": "Einmalhandschuhe", "d": "Gr. M", "u": "VE", "min": 4, "c": "H"}, "a03": {"n": "Einmalhandschuhe", "d": "Gr. L", "u": "VE", "min": 4, "c": "H"}, "a04": {"n": "Einmalhandschuhe", "d": "Gr. XL", "u": "VE", "min": 4, "c": "H"}, "a05": {"n": "Händedesinfektionsmittel", "d": "", "u": "Fl.", "min": 1, "c": "H"}, "a06": {"n": "Desinfektionstücher", "d": "", "u": "VE", "min": 1, "c": "H"}, "a07": {"n": "i-gel Maske", "d": "Erw., Gr. ? (1)", "u": "Stk", "min": 1, "c": "A"}, "a08": {"n": "i-gel Maske", "d": "Erw., Gr. ? (2)", "u": "Stk", "min": 1, "c": "A"}, "a09": {"n": "i-gel Maske", "d": "Erw., Gr. ? (3)", "u": "Stk", "min": 1, "c": "A"}, "a10": {"n": "Optilube", "d": "", "u": "Stk", "min": 5, "c": "A"}, "a11": {"n": "Cuffdruckmesser", "d": "", "u": "Stk", "min": 1, "c": "A"}, "a12": {"n": "Thomasholder", "d": "", "u": "Stk", "min": 1, "c": "A"}, "a13": {"n": "Wärmedecke", "d": "", "u": "Stk", "min": 8, "c": "E"}, "a14": {"n": "i-gel Maske", "d": "Kind, Gr. ? (1)", "u": "Stk", "min": 1, "c": "A"}, "a16": {"n": "i-gel Maske", "d": "Kind, Gr. ? (2)", "u": "Stk", "min": 1, "c": "A"}, "a15": {"n": "Thomasholder", "d": "Kind", "u": "Stk", "min": 1, "c": "A"}, "a17": {"n": "Sauerstoffflasche", "d": "5 l", "u": "Stk", "min": 1, "c": "B"}, "a18": {"n": "Demand-Ventil", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a19": {"n": "Sauerstoffmaske", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a20": {"n": "Hyperventilationsmaske", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a21": {"n": "Beatmungsbeutel (Ambu)", "d": "Erw.", "u": "Stk", "min": 4, "c": "A"}, "a22": {"n": "Beatmungsbeutel (Ambu)", "d": "Kind", "u": "Stk", "min": 1, "c": "B"}, "a23": {"n": "Beatmungsbeutel (Ambu)", "d": "Säugling", "u": "Stk", "min": 1, "c": "B"}, "a24": {"n": "Filter", "d": "Beatmung", "u": "Stk", "min": 1, "c": "B"}, "a25": {"n": "Gänsegurgel", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a26": {"n": "Traumaschere", "d": "", "u": "Stk", "min": 1, "c": "X"}, "a27": {"n": "Tourniquet", "d": "", "u": "Stk", "min": 2, "c": "X"}, "a28": {"n": "Israeli Bandage", "d": "", "u": "Stk", "min": 1, "c": "X"}, "a29": {"n": "Kompresse", "d": "10×10 cm", "u": "Stk", "min": 35, "c": "C"}, "a30": {"n": "Saugkompresse", "d": "15×25 cm", "u": "Stk", "min": 5, "c": "C"}, "a31": {"n": "Verbandpäckchen", "d": "groß", "u": "Stk", "min": 5, "c": "C"}, "a32": {"n": "Verbandpäckchen", "d": "mittel", "u": "Stk", "min": 5, "c": "C"}, "a33": {"n": "Verbandpäckchen", "d": "klein", "u": "Stk", "min": 5, "c": "C"}, "a34": {"n": "Mullbinde", "d": "groß", "u": "Stk", "min": 3, "c": "C"}, "a35": {"n": "Mullbinde", "d": "mittel", "u": "Stk", "min": 3, "c": "C"}, "a36": {"n": "Mullbinde", "d": "klein", "u": "Stk", "min": 3, "c": "C"}, "a37": {"n": "Heftpflaster", "d": "", "u": "VE", "min": 1, "c": "C"}, "a38": {"n": "Leukosilk", "d": "", "u": "Rolle", "min": 4, "c": "C"}, "a39": {"n": "SAM Splint", "d": "", "u": "Stk", "min": 3, "c": "C"}, "a40": {"n": "Sick Sac", "d": "", "u": "Stk", "min": 5, "c": "D"}, "a41": {"n": "Zellstofftuch", "d": "", "u": "VE", "min": 1, "c": "D"}, "a42": {"n": "Kältekompresse", "d": "", "u": "Stk", "min": 5, "c": "E"}, "a43": {"n": "Blutdruckmanschette", "d": "Erw.", "u": "Stk", "min": 4, "c": "G"}, "a44": {"n": "Blutdruckmanschette", "d": "Kind", "u": "Stk", "min": 1, "c": "G"}, "a45": {"n": "Oxi-Sensor", "d": "", "u": "Stk", "min": 3, "c": "G"}, "a46": {"n": "BZ-Messgerät", "d": "", "u": "Stk", "min": 3, "c": "G"}, "a47": {"n": "BZ-Messstäbchen", "d": "", "u": "VE", "min": 3, "c": "G"}, "a48": {"n": "Diagnostikleuchte", "d": "", "u": "Stk", "min": 3, "c": "G"}, "a49": {"n": "Infusionslösung", "d": "500 ml", "u": "Stk", "min": 1, "c": "C"}, "a50": {"n": "Infusionssystem", "d": "", "u": "Stk", "min": 1, "c": "C"}, "a51": {"n": "Viggo", "d": "22G", "u": "Stk", "min": 2, "c": "C"}, "a52": {"n": "Viggo", "d": "20G", "u": "Stk", "min": 2, "c": "C"}, "a53": {"n": "Viggo", "d": "18G", "u": "Stk", "min": 2, "c": "C"}, "a54": {"n": "Viggo", "d": "16G", "u": "Stk", "min": 2, "c": "C"}, "a55": {"n": "Viggo", "d": "14G", "u": "Stk", "min": 2, "c": "C"}, "a56": {"n": "Hautdesinfektion", "d": "", "u": "Fl.", "min": 1, "c": "C"}, "a57": {"n": "Stauband", "d": "", "u": "Stk", "min": 2, "c": "C"}, "a58": {"n": "Kanülenpflaster", "d": "", "u": "Stk", "min": 3, "c": "C"}, "a59": {"n": "Beatmungsmaske", "d": "Erw.", "u": "Stk", "min": 3, "c": "A"}, "a60": {"n": "Wendl-Tubus", "d": "Gr. ? (1)", "u": "Stk", "min": 3, "c": "A"}, "a61": {"n": "Wendl-Tubus", "d": "Gr. ? (2)", "u": "Stk", "min": 3, "c": "A"}, "a62": {"n": "Wendl-Tubus", "d": "Gr. ? (3)", "u": "Stk", "min": 3, "c": "A"}, "a63": {"n": "Reservoir", "d": "", "u": "Stk", "min": 2, "c": "A"}, "a64": {"n": "Pflaster", "d": "", "u": "VE", "min": 2, "c": "C"}, "a65": {"n": "Mullbinde", "d": "10 cm", "u": "Stk", "min": 6, "c": "C"}, "a66": {"n": "Mullbinde", "d": "6 cm", "u": "Stk", "min": 6, "c": "C"}, "a67": {"n": "Verbandpäckchen", "d": "10 cm", "u": "Stk", "min": 6, "c": "C"}, "a68": {"n": "Verbandpäckchen", "d": "6 cm", "u": "Stk", "min": 6, "c": "C"}}, "types": {"t1": {"n": "A/B", "col": "blau", "sec": [{"n": "Hygiene", "c": "H", "l": [{"i": "a01", "s": 1}, {"i": "a02", "s": 1}, {"i": "a03", "s": 1}, {"i": "a04", "s": 1}, {"i": "a05", "s": 1}, {"i": "a06", "s": 1}]}, {"n": "Intubation", "c": "A", "l": [{"i": "a07", "s": 1}, {"i": "a08", "s": 1}, {"i": "a09", "s": 1}, {"i": "a10", "s": 5}, {"i": "a11", "s": 1}, {"i": "a12", "s": 1}, {"i": "a13", "s": 1}]}, {"n": "Intubation Kind", "c": "A", "l": [{"i": "a14", "s": 1}, {"i": "a16", "s": 1}, {"i": "a15", "s": 1}]}, {"n": "Sauerstoff", "c": "B", "l": [{"i": "a17", "s": 1}, {"i": "a18", "s": 1}, {"i": "a19", "s": 1}, {"i": "a20", "s": 1}]}, {"n": "Beatmung", "c": "B", "l": [{"i": "a21", "s": 1}, {"i": "a22", "s": 1}, {"i": "a23", "s": 1}, {"i": "a24", "s": 1}, {"i": "a25", "s": 1}]}]}, "t2": {"n": "X/C/D/E", "col": "rot", "sec": [{"n": "Hygiene", "c": "H", "l": [{"i": "a01", "s": 1}, {"i": "a02", "s": 1}, {"i": "a03", "s": 1}, {"i": "a04", "s": 1}]}, {"n": "Extreme Bleeding", "c": "X", "l": [{"i": "a26", "s": 1}, {"i": "a27", "s": 2}, {"i": "a28", "s": 1}]}, {"n": "Circulation", "c": "C", "l": [{"i": "a29", "s": 10}, {"i": "a30", "s": 5}, {"i": "a31", "s": 5}, {"i": "a32", "s": 5}, {"i": "a33", "s": 5}, {"i": "a34", "s": 3}, {"i": "a35", "s": 3}, {"i": "a36", "s": 3}, {"i": "a37", "s": 1}, {"i": "a38", "s": 1}, {"i": "a39", "s": 1}, {"i": "a13", "s": 1}]}, {"n": "Zugang", "c": "C", "l": [{"i": "a49", "s": 1}, {"i": "a50", "s": 1}, {"i": "a51", "s": 2}, {"i": "a52", "s": 2}, {"i": "a53", "s": 2}, {"i": "a54", "s": 2}, {"i": "a55", "s": 2}, {"i": "a56", "s": 1}, {"i": "a29", "s": 5}, {"i": "a57", "s": 2}, {"i": "a58", "s": 3}, {"i": "a38", "s": 1}]}, {"n": "Disability", "c": "D", "l": [{"i": "a40", "s": 5}, {"i": "a41", "s": 1}]}, {"n": "Environment", "c": "E", "l": [{"i": "a13", "s": 5}, {"i": "a42", "s": 5}]}, {"n": "Diagnostik", "c": "G", "l": [{"i": "a43", "s": 2}, {"i": "a44", "s": 1}, {"i": "a45", "s": 1}, {"i": "a46", "s": 1}, {"i": "a47", "s": 1}, {"i": "a48", "s": 1}]}, {"n": "Zusätzliches", "c": "Z", "l": [{"i": "a21", "s": 1}, {"i": "a59", "s": 1}, {"i": "a60", "s": 1}, {"i": "a61", "s": 1}, {"i": "a62", "s": 1}, {"i": "a13", "s": 1}]}]}, "t3": {"n": "Ranger/Transit", "col": "rot", "sec": [{"n": "Hygiene", "c": "H", "l": [{"i": "a01", "s": 1}, {"i": "a02", "s": 1}, {"i": "a03", "s": 1}, {"i": "a04", "s": 1}]}, {"n": "Diagnostik", "c": "G", "l": [{"i": "a43", "s": 1}, {"i": "a45", "s": 1}, {"i": "a46", "s": 1}, {"i": "a47", "s": 1}, {"i": "a48", "s": 1}]}, {"n": "Beatmung, Airway", "c": "A", "l": [{"i": "a21", "s": 1}, {"i": "a59", "s": 1}, {"i": "a60", "s": 1}, {"i": "a61", "s": 1}, {"i": "a62", "s": 1}, {"i": "a63", "s": 1}]}, {"n": "Verband", "c": "C", "l": [{"i": "a64", "s": 1}, {"i": "a65", "s": 3}, {"i": "a66", "s": 3}, {"i": "a29", "s": 10}, {"i": "a67", "s": 3}, {"i": "a68", "s": 3}, {"i": "a38", "s": 1}, {"i": "a39", "s": 1}]}]}}, "bags": {"b1": {"n": "Rucksack A/B", "t": "t1"}, "b2": {"n": "Rucksack X/C/D/E", "t": "t2"}, "b3": {"n": "Rucksack Ranger", "t": "t3"}, "b4": {"n": "Rucksack Transit", "t": "t3"}}, "v": 1};
 let FILL={},EXP={},admQ="",MIRROR={},CFG=null,BOOK=[],BASE=null,STATS={},canWrite=true,unlocked=false,loaded={cfg:false,book:false};
 const ADMIN_CODE="112";
-const APP_VERSION="1.3";const APP_DATE="30.10.2026";
+const APP_VERSION="1.4";const APP_DATE="30.10.2026";
 /* Neue Version automatisch laden (GitHub hält Seiten bis zu 10 Min. im Zwischenspeicher) */
 async function checkUpdate(){try{const r=await fetch(location.pathname,{cache:"reload"});const t=await r.text();const m=t.match(/APP_VERSION="([^"]+)"/);
   if(m&&m[1]!==APP_VERSION&&!sheet&&!inv&&!cfgDirty&&!busy()){saveView();location.reload()}}catch(e){}}
@@ -315,7 +316,7 @@ function render(){
   const S=stock(),y=scrollY,sameView=lastView===tab+"|"+edit;didMain=true;
   m.innerHTML=({home:vHome,bags:vBags,lager:vLager,stats:vStats,admin:vAdmin,ahome:vArea,alog:vAreaLog}[tab]||vHome)(S);
   m.querySelectorAll("details[id]").forEach(d=>{if(OPEN.has(d.id))d.open=true});
-  if(tab==="admin"){filterAdm();drawLabels();const q=$("#homeqr");if(q&&window.QRCode)new QRCode(q,{text:location.origin+location.pathname,width:180,height:180,correctLevel:QRCode.CorrectLevel.M})}
+  if(tab==="admin"){filterAdm();drawLabels();const q=$("#homeqr");if(q&&window.QRCode)new QRCode(q,{text:q.dataset.url||(location.origin+location.pathname),width:180,height:180,correctLevel:QRCode.CorrectLevel.M})}
   if(sameView)scrollTo(0,y);lastView=tab+"|"+edit;saveView();
 }
 function vHome(S){
@@ -410,13 +411,13 @@ function chartSvg(m){
 function niceStep(max){const r=max/4,p=Math.pow(10,Math.floor(Math.log10(r)));for(const f of [1,2,5,10])if(f*p>=r)return Math.max(1,f*p);return Math.max(1,p*10)}
 function vAdmin(){
   if(!isUnl())return pinBox();
-  const V=[["bags","Rucksäcke"],["lager","Artikel & Lager"],["areas","Bereiche"],["labels","QR-Etiketten"],["mail","E-Mail"],["hist","Verlauf"],["set","Einstellungen"]];
+  if(area!=="san")return vAreaAdmin();
+  const V=[["bags","Rucksäcke"],["lager","Artikel & Lager"],["labels","QR-Etiketten"],["mail","E-Mail"],["hist","Verlauf"],["set","Einstellungen"]];
   let h=`<div class="row"><h2 class="sp">Admin</h2><button class="btn small" data-act="lock">Abmelden</button></div><div class="chips">${V.map(([v,n])=>`<button class="chip" data-act="adm" data-v="${v}" aria-pressed="${adm===v}">${n}</button>`).join("")}</div>`;
   if(adm==="bags"){const bags=Object.keys(CFG.bags);if(!bagSel||!CFG.bags[bagSel])bagSel=bags[0];
     h+=`<div class="chips">${bags.map(b=>`<button class="chip" data-act="selbag" data-b="${b}" aria-pressed="${b===bagSel}"><span class="dot d-${locCol(b)}"></span>${esc(CFG.bags[b].n)}</button>`).join("")}<button class="chip" data-act="bagnew">＋ Neuer Rucksack</button></div>`;
     if(bagSel)h+=vBagEdit();}
   else if(adm==="lager")h+=vLagerEdit();
-  else if(adm==="areas")h+=vAdminAreas();
   else if(adm==="labels"){
   // Etiketten
   h+=`<div class="sec" id="labdet" data-open="1">
@@ -428,12 +429,11 @@ function vAdmin(){
    <textarea id="mail-an" rows="3" placeholder="name@beispiel.de">${esc(((CFG.mail||{}).an||"").split(/[\s,;]+/).filter(Boolean).join("\n"))}</textarea>
    <label class="row small"><input type="checkbox" id="mail-best" ${(CFG.mail||{}).best===false?"":"checked"}> Nachbestellen</label>
    <label class="row small"><input type="checkbox" id="mail-fill" ${(CFG.mail||{}).fill===false?"":"checked"}> Füllstand (ca. ¼ oder leer)</label>
-   <label class="row small"><input type="checkbox" id="mail-area" ${(CFG.mail||{}).areas===false?"":"checked"}> Weitere Bereiche (Tank ¼/Reserve, Teile fehlt/kaputt)</label>
    <label class="row small"><input type="checkbox" id="mail-exp" ${(CFG.mail||{}).exp===false?"":"checked"}> Verfall (abgelaufen / in 3 Monaten)</label>
    <div class="row"><button class="btn pri" data-act="mailsave">Speichern</button></div>
    <span class="muted small">Geprüft wird stündlich. Die <b>erste</b> Adresse bekommt beim allerersten Mal eine Bestätigungsmail von FormSubmit – bitte dort auf „Activate“ klicken (auch nach einem Wechsel der ersten Adresse). Hinweis: Die Adressen liegen in der Lager-Datenbank, die jeder mit dem Link lesen kann.</span></div>`;
   else if(adm==="hist")h+=`<p class="muted small" style="margin:0">Falsche Buchungen hier stornieren.</p>`+histList(BOOK.slice(0,200),true);
-  else h+=`<div class="editbar"><b>Startseite für den Lager-Aushang</b><span class="muted small">Dieser Link bzw. QR-Code führt direkt in die Übersicht:</span><code style="word-break:break-all">${esc(location.origin+location.pathname)}</code><div id="homeqr" style="background:#fff;padding:10px;border-radius:8px;width:max-content"></div></div>
+  else h+=`<div class="editbar"><b>Link / QR für den Lager-Aushang</b><span class="muted small">Führt direkt in den San-Bereich:</span><code style="word-break:break-all">${esc(location.origin+location.pathname)}</code><div id="homeqr" style="background:#fff;padding:10px;border-radius:8px;width:max-content"></div></div>
    <div class="editbar"><b>Buchungen zusammenfassen</b><span class="muted small">${BOOK.length} einzelne Buchungen gespeichert. Ab etwa 1500 sollten sie zusammengefasst werden: Bestände und Monatsstatistik bleiben erhalten, nur der Einzelverlauf wird gelöscht.</span><div class="row"><button class="btn" data-act="compact" ${BOOK.length?"":"disabled"}>Zusammenfassen</button></div></div>`;
   return h;
 }
@@ -495,7 +495,7 @@ async function write(b){
 let saveSeq=0;
 function saveSoon(){cfgDirty=true;const my=++saveSeq;clearTimeout(saveT);$("#sync").textContent="speichert …";saveT=setTimeout(async()=>{const ok=await saveCfg();if(my===saveSeq){cfgDirty=false;$("#sync").textContent=ok?"gespeichert":"live"}},600)}
 function isUnl(){if(unlocked)return true;try{if(sessionStorage.getItem("sl-adm")==="1"){unlocked=true;return true}}catch(e){}return false}
-function pinBox(){return`<section class="sec"><h2>Admin</h2><p class="muted" style="margin:0">Hier werden Rucksäcke, Bestückungen, Artikel und Mindestbestände bearbeitet. Buchen, Auffüllen und Inventur gehen für alle ohne Code.</p><div class="editbar"><label class="f">Admin-Code<input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Code"></label><button class="btn pri" data-act="unlock">Öffnen</button></div></section>`}
+function pinBox(){return`<section class="sec"><h2>Admin</h2><p class="muted" style="margin:0">${area==="san"?"Hier werden Rucksäcke, Bestückungen, Artikel und Mindestbestände bearbeitet. Buchen, Auffüllen und Inventur gehen für alle ohne Code.":`Hier wird „${esc((areas()[area]||{}).n||"")}“ eingerichtet. Eintragen geht für alle ohne Code.`}</p><div class="editbar"><label class="f">Admin-Code<input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Code"></label><button class="btn pri" data-act="unlock">Öffnen</button></div></section>`}
 const COLS=[["blau","Blau"],["rot","Rot"],["gruen","Grün"],["orange","Orange"],["grau","Grau"]];
 function catOpts(sel){return CORD.split("").map(c=>`<option value="${c}" ${c===sel?"selected":""}>${CLET[c]} – ${CATS[c]}</option>`).join("")}
 function itemLabel(i){const it=CFG.items[i];return it.n+(it.d?" · "+it.d:"")}
@@ -530,6 +530,8 @@ function editSheet(){
   const sh=sheet,t=sh.tmp,close=`<button class="btn" data-act="close">Abbrechen</button>`;
   if(sh.kind==="afuel"||sh.kind==="apack")return areaSheet();
   if(sh.kind==="plist")return plistSheet();
+  if(sh.kind==="apick")return pickSheet();
+  if(sh.kind==="anew")return newAreaSheet();
   if(sh.kind==="order"){const ro=reorder(stock());let lastC=null,h="";
     for(const r of ro){const c=CFG.items[r.i].c;if(c!==lastC){h+=catHead(c);lastC=c}h+=roRow(r,true)}
     return`<div class="row"><b class="sp sht">Bestellliste (${ro.length})</b><button class="btn" data-act="close">Schließen</button></div>
@@ -623,7 +625,7 @@ document.addEventListener("click",async e=>{
   else if(a==="addline"){const k=+t.dataset.k,i=$("#al-"+k).value,s=parseInt($("#as-"+k).value)||1;if(!i)return;CFG.types[editType].sec[k].l.push({i,s});await saveCfg("Hinzugefügt");render()}
   else if(a==="addbag"){const n=$("#nb-n").value.trim();if(!n){toast("Bitte einen Namen eingeben");return}const id=newId("b",CFG.bags);CFG.bags[id]={n,t:$("#nb-t").value};await saveCfg(`${n} angelegt`);render()}
   else if(a==="delbag"){if(t.dataset.sure){delete CFG.bags[t.dataset.b];await saveCfg("Rucksack gelöscht");render()}else{t.dataset.sure=1;t.textContent="Wirklich?"}}
-  else if(a==="unlock"){if($("#pin").value.trim()===ADMIN_CODE){unlocked=true;try{sessionStorage.setItem("sl-adm","1")}catch(e){}render()}else toast("Code falsch")}
+  else if(a==="unlock"){if($("#pin").value.trim()===ADMIN_CODE){unlocked=true;try{sessionStorage.setItem("sl-adm","1")}catch(e){}render();if(sheet)drawSheet()}else toast("Code falsch")}
   else if(a==="lock"){unlocked=false;try{sessionStorage.removeItem("sl-adm")}catch(e){}tab="home";render()}
   else if(a==="adm"){adm=t.dataset.v;render();scrollTo(0,0)}
   else if(a==="labdl")saveLabels();
@@ -632,7 +634,7 @@ document.addEventListener("click",async e=>{
   else if(a==="todaylist"){$("#sheet").innerHTML="";sheet={kind:"today",tmp:{}};drawSheet()}
   else if(a==="kpibags"){tab="bags";render();scrollTo(0,0)}
   else if(a==="ordercopy"){const txt=$("#ordertxt").value;try{await navigator.clipboard.writeText(txt);toast("Bestellliste kopiert")}catch(e){const ta=$("#ordertxt");ta.style.display="block";ta.select();toast("Text markiert – bitte kopieren")}}
-  else if(a==="mailsave"){const raw=$("#mail-an").value.split(/[\s,;]+/).filter(Boolean),bad=raw.filter(x=>!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));if(bad.length){toast("Keine gültige Adresse: "+bad[0]);return}CFG.mail={an:raw.join(","),best:$("#mail-best").checked,exp:$("#mail-exp").checked,fill:$("#mail-fill").checked,areas:$("#mail-area").checked};saveSoon();toast(raw.length?raw.length+" Empfänger gespeichert":"Gespeichert – ohne Adresse werden keine Mails verschickt")}
+  else if(a==="mailsave"){const raw=$("#mail-an").value.split(/[\s,;]+/).filter(Boolean),bad=raw.filter(x=>!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));if(bad.length){toast("Keine gültige Adresse: "+bad[0]);return}CFG.mail={an:raw.join(","),best:$("#mail-best").checked,exp:$("#mail-exp").checked,fill:$("#mail-fill").checked};saveSoon();toast(raw.length?raw.length+" Empfänger gespeichert":"Gespeichert – ohne Adresse werden keine Mails verschickt")}
   else if(a==="fstep"){keepSheet();const f=t.dataset.f;sheet.tmp[f]=Math.max(f==="soll"?1:0,(+sheet.tmp[f]||0)+ +t.dataset.d);drawSheet()}
   else if(a==="tcol"){keepSheet();sheet.tmp.col=t.dataset.c;drawSheet()}
   else if(a==="itemsave"){keepSheet();const m=sheet.tmp;if(!m.n.trim()){toast("Bitte eine Bezeichnung eingeben");return}const id=sheet.i||newId("a",CFG.items);CFG.items[id]={...(CFG.items[id]||{}),n:m.n.trim(),d:m.d.trim(),u:m.fill?"Stk":((m.u||"Stk").trim()||"Stk"),ve:!m.fill&&m.u==="VE"?(+m.ve||0):0,c:m.c,min:+m.min||0,ziel:+m.ziel||0,fill:!!m.fill};sheet=null;drawSheet();saveSoon();toast("Gespeichert");render()}
@@ -717,7 +719,7 @@ function fmtD(ts){if(!ts)return"";const d=new Date(ts);return d.toLocaleDateStri
 function renderNav(){
   const A=areas(),ids=Object.keys(A).sort();
   if(area!=="san"&&!A[area])area="san";
-  $("#areas").innerHTML=ids.length?[`<button data-act="area" data-a="san" aria-pressed="${area==="san"}">San</button>`].concat(ids.map(id=>{const n=areaIssues(id);return`<button data-act="area" data-a="${id}" aria-pressed="${area===id}">${esc(A[id].n)}${n?`<span class="bdg">${n}</span>`:""}</button>`})).join(""):"";
+  $("#areas").innerHTML="";const tt=area==="san"?"San-Lager":A[area].n;$("#atitle").textContent=tt;document.title=tt+" · DLRG";
   const T=area==="san"?[["home","Übersicht"],["bags","Rucksäcke"],["lager","Lager"],["stats","Statistik"],["admin","Admin"]]:[["ahome","Übersicht"],["alog","Verlauf"],["admin","Admin"]];
   if(!T.some(x=>x[0]===tab))tab=T[0][0];
   $("#tabs").innerHTML=T.map(([k,n])=>`<button data-tab="${k}" aria-current="${tab===k}">${n}</button>`).join("");
@@ -768,16 +770,35 @@ function plistSheet(){const sh=sheet,A=areas()[sh.a],o=A&&A.o[sh.o];if(!o)return
   <div class="list">${(o.l||[]).map((p,k)=>`<div class="ed-line"><input class="ed-in" data-pli="${p.id}" value="${esc(p.n)}" aria-label="Bezeichnung">${k?`<button class="x" style="color:var(--ink)" data-act="plup" data-p="${p.id}" title="nach oben">↑</button>`:""}<button class="x" data-act="pldel" data-p="${p.id}" title="Entfernen">✕</button></div>`).join("")||'<div class="li muted">Noch leer.</div>'}</div>
   <div class="row"><input class="ed-in" data-sf="nn" id="plnew" value="${esc(sh.tmp.nn||"")}" placeholder="Neues Teil, z. B. Wurfsack 20 m"><button class="btn pri" data-act="pladd">Hinzufügen</button></div>
   ${Object.keys(A.o).length>1?`<div class="row"><span class="muted small sp">Diese Packliste in alle ${esc(A.n)} übernehmen.</span><button class="btn" data-act="plall">Für alle übernehmen</button></div>`:""}`}
-function vAdminAreas(){
-  const A=areas(),ids=Object.keys(A).sort();if(areaSel!=="__new"&&(!areaSel||!A[areaSel]))areaSel=ids[0]||"__new";
-  let h=`<div class="chips">${ids.map(id=>`<button class="chip" data-act="arsel" data-a="${id}" aria-pressed="${id===areaSel}">${esc(A[id].n)}</button>`).join("")}<button class="chip" data-act="arsel" data-a="__new" aria-pressed="${areaSel==="__new"}">＋ Neuer Bereich</button></div>`;
-  if(areaSel==="__new")return h+`<div class="editbar"><b>Neuer Bereich</b><label class="f">Name<input id="ar-n" placeholder="z. B. Funkgeräte, Wathosen, Boote"></label><span class="lbl">Art</span><div class="chips"><button class="chip" data-act="artyp" data-v="pack" aria-pressed="true">Packliste: Teile ok / fehlt / kaputt / trocknet</button><button class="chip" data-act="artyp" data-v="fuel" aria-pressed="false">Tankstand: voll bis Reserve, Getankt</button></div><div class="row"><button class="btn pri" data-act="aradd">Bereich anlegen</button></div></div>`;
-  const a=A[areaSel],objs=aObjs(areaSel);
-  h+=`<div class="editbar"><label class="f">Name des Bereichs<input data-arname="${areaSel}" value="${esc(a.n)}"></label><span class="muted small">Art: ${ATYP[a.typ]||a.typ}</span></div>
-  <div class="list">${objs.map(o=>`<div class="ed-line"><input class="ed-in" data-oname="${o.id}" value="${esc(o.n)}" aria-label="Name">${a.typ==="pack"?`<button class="btn small" data-act="aplist" data-o="${o.id}">Packliste (${(o.l||[]).length})</button>`:""}<button class="x" data-act="aodel" data-o="${o.id}" title="Löschen">✕</button></div>`).join("")||`<div class="li muted">Noch keine Einträge.</div>`}</div>
-  <div class="editbar"><b>${a.typ==="fuel"?"Neues Fahrzeug":"Neue Tasche"}</b><input id="ao-n" placeholder="${a.typ==="fuel"?"z. B. Funkrufname oder Kennzeichen":"z. B. SR-Tasche 1"}">${a.typ==="pack"&&objs.length?`<label class="f">Packliste übernehmen von<select id="ao-src"><option value="">– leer beginnen –</option>${objs.map((o,k)=>`<option value="${o.id}" ${k===0?"selected":""}>${esc(o.n)}</option>`).join("")}</select></label>`:""}<div class="row"><button class="btn pri" data-act="aoadd">Anlegen</button></div></div>
-  <div class="row">${objs.length?`<button class="btn" data-act="aqr">QR-Etiketten drucken</button>`:""}<span class="sp"></span><button class="btn dng" data-act="ardel">Bereich löschen</button></div>`;
+let aadm="obj";
+function vAreaAdmin(){
+  areaSel=area;const a=areas()[area],objs=aObjs(area),W=a.typ==="fuel"?["Fahrzeuge","Neues Fahrzeug","z. B. Funkrufname oder Kennzeichen"]:["Einträge","Neuer Eintrag","z. B. SR-Tasche 1"];
+  const V=[["obj",W[0]],["qr","QR-Etiketten"],["mail","E-Mail"],["set","Einstellungen"]];
+  let h=`<div class="row"><h2 class="sp">Admin</h2><button class="btn small" data-act="lock">Abmelden</button></div><div class="chips">${V.map(([v,n])=>`<button class="chip" data-act="aadm" data-v="${v}" aria-pressed="${aadm===v}">${n}</button>`).join("")}</div>`;
+  if(aadm==="obj"){
+    h+=`<div class="list">${objs.map(o=>`<div class="ed-line"><input class="ed-in" data-oname="${o.id}" value="${esc(o.n)}" aria-label="Name">${a.typ==="pack"?`<button class="btn small" data-act="aplist" data-o="${o.id}">Packliste (${(o.l||[]).length})</button>`:""}<button class="x" data-act="aodel" data-o="${o.id}" title="Löschen">✕</button></div>`).join("")||`<div class="li muted">Noch keine Einträge.</div>`}</div>
+    <div class="editbar"><b>${W[1]}</b><input id="ao-n" placeholder="${W[2]}">${a.typ==="pack"&&objs.length?`<label class="f">Packliste übernehmen von<select id="ao-src"><option value="">– leer beginnen –</option>${objs.map((o,k)=>`<option value="${o.id}" ${k===0?"selected":""}>${esc(o.n)}</option>`).join("")}</select></label>`:""}<div class="row"><button class="btn pri" data-act="aoadd">Anlegen</button></div></div>`}
+  else if(aadm==="qr")h+=`<div class="editbar"><b>QR-Etiketten</b><span class="muted small">Ein Etikett pro ${a.typ==="fuel"?"Fahrzeug":"Eintrag"}. Scannen öffnet direkt die Prüfung. A4, 4 pro Reihe, am besten am PC drucken.</span><div class="row"><button class="btn pri" data-act="aqr" ${objs.length?"":"disabled"}>Etiketten drucken (${objs.length})</button></div></div>`;
+  else if(aadm==="mail"){const m=a.mail||{};h+=`<div class="editbar"><b>E-Mail für „${esc(a.n)}“</b><span class="muted small">Eigene Empfänger nur für diesen Bereich. Eine Adresse pro Zeile. Gemailt wird, wenn ${a.typ==="fuel"?"ein Tank auf ¼ oder Reserve steht":"ein Teil fehlt oder kaputt ist"}.</span>
+    <textarea id="amail-an" rows="3" placeholder="name@beispiel.de">${esc((m.an||"").split(/[\s,;]+/).filter(Boolean).join("\n"))}</textarea>
+    <div class="row"><button class="btn pri" data-act="amailsave">Speichern</button></div>
+    <span class="muted small">Die <b>erste</b> Adresse bekommt beim ersten Mal eine Bestätigungsmail von FormSubmit – dort auf „Activate“ klicken. Ohne Adresse werden für diesen Bereich keine Mails verschickt.</span></div>`}
+  else h+=`<div class="editbar"><label class="f">Name des Bereichs<input data-arname="${area}" value="${esc(a.n)}"></label><span class="muted small">Art: ${ATYP[a.typ]||a.typ}</span></div>
+    <div class="editbar"><b>Link / QR für diesen Bereich</b><span class="muted small">Für einen Aushang, z. B. in der Fahrzeughalle. Öffnet direkt „${esc(a.n)}“.</span><code style="word-break:break-all">${esc(location.origin+location.pathname+"#b-"+area)}</code><div id="homeqr" data-url="${esc(location.origin+location.pathname+"#b-"+area)}" style="background:#fff;padding:10px;border-radius:8px;width:max-content"></div></div>
+    <div class="row"><span class="sp"></span><button class="btn dng" data-act="ardel">Bereich löschen</button></div>`;
   return h}
+function pickSheet(){const A=areas(),ids=Object.keys(A).sort(),row=(id,n,c)=>`<button class="li" data-act="area" data-a="${id}"><span class="nm"><b>${esc(n)}</b></span>${c?`<span class="pill p-crit">${c}</span>`:""}${id===area?'<span class="pill p-ok">aktiv</span>':""}</button>`;
+  return`<div class="row"><b class="sp sht">Bereich wählen</b><button class="btn" data-act="close">Schließen</button></div>
+  <div class="list">${row("san","San-Lager",0)}${ids.map(id=>row(id,A[id].n,areaIssues(id))).join("")}</div>
+  <div class="row"><button class="btn" data-act="anew">＋ Neuer Themenbereich</button></div>`}
+function newAreaSheet(){
+  if(!isUnl())return`<div class="row"><b class="sp sht">Neuer Themenbereich</b><button class="btn" data-act="close">Abbrechen</button></div><div class="editbar"><label class="f">Admin-Code<input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Code"></label><button class="btn pri" data-act="unlock">Weiter</button></div>`;
+  return`<div class="row"><b class="sp sht">Neuer Themenbereich</b><button class="btn" data-act="close">Abbrechen</button></div>
+  <label class="f">Name<input id="ar-n" placeholder="z. B. Funkgeräte, Boote, Wathosen"></label>
+  <span class="lbl">Art</span>
+  <div class="chips"><button class="chip" data-act="artyp" data-v="pack" aria-pressed="true">Packliste / Checkliste</button><button class="chip" data-act="artyp" data-v="fuel" aria-pressed="false">Tankstand</button></div>
+  <p class="muted small" style="margin:0"><b>Packliste:</b> Einträge (z. B. Taschen, Boote) mit Teilen, die auf ok / fehlt / kaputt / trocknet gesetzt werden.<br><b>Tankstand:</b> Einträge (z. B. Fahrzeuge, Stromerzeuger) mit Tankstand und „Getankt“.</p>
+  <div class="row"><button class="btn pri big" data-act="aradd">Bereich anlegen</button></div>`}
 function openArea(aid,oid){const A=areas()[aid];if(!A||!(A.o||{})[oid])return;area=aid;tab="ahome";$("#sheet").innerHTML="";sheet={kind:A.typ==="fuel"?"afuel":"apack",a:aid,o:oid,tmp:{}};render();drawSheet()}
 function printAreaLabels(aid){if(!window.QRCode){toast("QR-Bibliothek nicht geladen");return}const A=areas()[aid],cells=[];
   for(const o of aObjs(aid)){const tmp=document.createElement("div");new QRCode(tmp,{text:location.origin+location.pathname+"#a-"+aid+"-"+o.id,width:300,height:300,correctLevel:QRCode.CorrectLevel.M});const c=tmp.querySelector("canvas");cells.push(`<div class="l"><img src="${c.toDataURL()}" alt=""><b>${esc(o.n)}</b><small>${esc(A.n)}</small></div>`)}
@@ -787,7 +808,11 @@ async function aWrite(path,method,body){try{const r=await fb(path,method,body);r
 function whoNow(){const w=$("#swho");if(w){ls("who",w.value.trim());return w.value.trim()}return ls("who")||""}
 async function aLog(aid,x){for(const k in x)if(x[k]==null)delete x[k];const r=await aWrite("/alog/"+aid,"POST",x);if(r&&r.name)aLocal("/alog/"+aid+"/"+r.name,x)}
 async function areaClick(a,t){
-  if(a==="area"){area=t.dataset.a;tab=area==="san"?"home":"ahome";sheet=null;drawSheet();render();scrollTo(0,0);return true}
+  if(a==="area"){area=t.dataset.a;tab=area==="san"?"home":"ahome";aadm="obj";sheet=null;drawSheet();render();scrollTo(0,0);return true}
+  if(a==="apick"){$("#sheet").innerHTML="";sheet={kind:"apick",tmp:{}};drawSheet();return true}
+  if(a==="anew"){$("#sheet").innerHTML="";sheet={kind:"anew",tmp:{}};drawSheet();return true}
+  if(a==="aadm"){aadm=t.dataset.v;render();return true}
+  if(a==="amailsave"){const raw=$("#amail-an").value.split(/[\s,;]+/).filter(Boolean),bad=raw.filter(x=>!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));if(bad.length){toast("Keine gültige Adresse: "+bad[0]);return true}CFG.areas[area].mail={an:raw.join(",")};saveSoon();toast(raw.length?raw.length+" Empfänger gespeichert":"Gespeichert – keine Mails für diesen Bereich");return true}
   if(a==="aobj"){openArea(area,t.dataset.o);return true}
   if(a==="afset"){keepSheet();const who=whoNow(),v=t.dataset.v,ts=Date.now(),b=`/astate/${sheet.a}/${sheet.o}`;
     if(await aWrite(b,"PATCH",{v,ts,who})){aLocal(b+"/v",v);aLocal(b+"/ts",ts);aLocal(b+"/who",who);await aLog(sheet.a,{o:sheet.o,kind:"tank",v,ts,who});toast("Tankstand: "+FUELN[v]);drawSheet();render()}return true}
@@ -799,8 +824,8 @@ async function areaClick(a,t){
     if(await aWrite(b,"PATCH",p)){aLocal(b+"/chk",{ts,who});for(const x of o.l||[])aLocal(b+"/i/"+x.id,{s:"ok",ts,who});await aLog(sheet.a,{o:sheet.o,kind:"allok",ts,who});toast("Als gepackt gespeichert");sheet=null;drawSheet();render()}return true}
   if(a==="arsel"){areaSel=t.dataset.a;render();return true}
   if(a==="artyp"){document.querySelectorAll("[data-act=artyp]").forEach(b=>b.setAttribute("aria-pressed",b===t?"true":"false"));return true}
-  if(a==="aradd"){const n=$("#ar-n").value.trim();if(!n){toast("Bitte einen Namen eingeben");return true}const typ=(document.querySelector("[data-act=artyp][aria-pressed=true]")||{dataset:{v:"pack"}}).dataset.v;CFG.areas=CFG.areas||{};const id=newId("ar",CFG.areas);CFG.areas[id]={n,typ,o:{}};areaSel=id;saveSoon();toast(`Bereich „${n}“ angelegt`);render();return true}
-  if(a==="ardel"){if(!t.dataset.sure){t.dataset.sure=1;t.textContent="Wirklich löschen? Alle Einträge gehen verloren";return true}const id=areaSel;delete CFG.areas[id];areaSel=null;if(area===id)area="san";saveSoon();fb("/astate/"+id,"DELETE").catch(()=>{});fb("/alog/"+id,"DELETE").catch(()=>{});toast("Bereich gelöscht");render();return true}
+  if(a==="aradd"){const n=$("#ar-n").value.trim();if(!n){toast("Bitte einen Namen eingeben");return true}const typ=(document.querySelector("[data-act=artyp][aria-pressed=true]")||{dataset:{v:"pack"}}).dataset.v;CFG.areas=CFG.areas||{};const id=newId("ar",CFG.areas);CFG.areas[id]={n,typ,o:{}};areaSel=id;area=id;tab="admin";aadm="obj";sheet=null;drawSheet();saveSoon();toast(`Bereich „${n}“ angelegt`);render();return true}
+  if(a==="ardel"){if(!t.dataset.sure){t.dataset.sure=1;t.textContent="Wirklich löschen? Alle Einträge gehen verloren";return true}const id=areaSel;delete CFG.areas[id];areaSel=null;area="san";tab="home";saveSoon();fb("/astate/"+id,"DELETE").catch(()=>{});fb("/alog/"+id,"DELETE").catch(()=>{});toast("Bereich gelöscht");render();return true}
   if(a==="aoadd"){const A=CFG.areas[areaSel],n=$("#ao-n").value.trim();if(!n){toast("Bitte einen Namen eingeben");return true}A.o=A.o||{};const id=newId("o",A.o),src=$("#ao-src")?$("#ao-src").value:"";A.o[id]={n};if(A.typ==="pack")A.o[id].l=src&&A.o[src]?JSON.parse(JSON.stringify(A.o[src].l||[])):[];saveSoon();toast(`„${n}“ angelegt`);render();return true}
   if(a==="aodel"){if(!t.dataset.sure){t.dataset.sure=1;t.textContent="Löschen?";return true}const o=t.dataset.o;delete CFG.areas[areaSel].o[o];saveSoon();fb(`/astate/${areaSel}/${o}`,"DELETE").catch(()=>{});render();return true}
   if(a==="aplist"){$("#sheet").innerHTML="";sheet={kind:"plist",a:areaSel,o:t.dataset.o,tmp:{nn:""}};drawSheet();return true}
@@ -833,7 +858,7 @@ async function compact(btn){
 }
 
 /* ---------- QR-Aufruf ---------- */
-function handleHash(){if(location.hash==="#admin"){tab="admin";render();return}const am=/^#a-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(am&&CFG){openArea(am[1],am[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const m=/^#q-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(!m||!CFG)return;openSheet(m[1],m[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function handleHash(){if(location.hash==="#admin"){tab="admin";render();return}const bm=/^#b-([a-z0-9]+)$/.exec(location.hash||"");if(bm&&CFG){area=areas()[bm[1]]?bm[1]:"san";tab=area==="san"?"home":"ahome";render();try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const am=/^#a-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(am&&CFG){openArea(am[1],am[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const m=/^#q-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(!m||!CFG)return;openSheet(m[1],m[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
 addEventListener("hashchange",handleHash);
 
 /* ---------- Start: Live-Verbindung ---------- */
@@ -851,8 +876,8 @@ function changed(){if(rq)return;rq=true;requestAnimationFrame(()=>{rq=false;deri
   if(!CFG&&first){fb("/cfg","PUT",DEFAULT_CFG).catch(()=>toast("Startdaten konnten nicht geschrieben werden"));return}
   if(CFG&&MIRROR.cfg&&MIRROR.cfg.areasInit===undefined&&!areasSeeded){areasSeeded=true;fb("/cfg","PATCH",{areasInit:true,areas:{ar01:{n:"Fahrzeuge",typ:"fuel"},ar02:{n:"SR-Taschen",typ:"pack"}}}).catch(()=>{})}
   if(!inv||!didMain)render();if(sheet&&(!sheet.kind||sheet.kind==="afuel"||sheet.kind==="apack")&&!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#sheet"))){keepSheet();drawSheet()}if(first&&CFG){first=false;handleHash()}})}
-function saveView(){try{sessionStorage.setItem("sl-view",JSON.stringify({tab,adm,bagSel,labLoc,inv,area,areaSel}))}catch(e){}}
-(function(){try{const v=JSON.parse(sessionStorage.getItem("sl-view")||"null");if(v){tab=v.tab||tab;adm=v.adm||adm;bagSel=v.bagSel||null;labLoc=v.labLoc||labLoc;inv=v.inv||null;area=v.area||"san";areaSel=v.areaSel||null}}catch(e){}})();
+function saveView(){try{sessionStorage.setItem("sl-view",JSON.stringify({tab,adm,bagSel,labLoc,inv,area,areaSel,aadm}))}catch(e){}}
+(function(){try{const v=JSON.parse(sessionStorage.getItem("sl-view")||"null");if(v){tab=v.tab||tab;adm=v.adm||adm;bagSel=v.bagSel||null;labLoc=v.labLoc||labLoc;inv=v.inv||null;area=v.area||"san";areaSel=v.areaSel||null;aadm=v.aadm||"obj"}}catch(e){}})();
 document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.inv&&inv){inv.v[t.dataset.inv]=t.value;saveView()}});
 addEventListener("pagehide",saveView);document.addEventListener("visibilitychange",()=>{if(document.hidden)saveView()});
 $("#ver").textContent="v"+APP_VERSION+" · "+APP_DATE;

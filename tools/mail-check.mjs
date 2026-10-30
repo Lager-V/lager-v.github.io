@@ -41,46 +41,60 @@ export function auswerten(daten) {
   }
   const bereiche = [];
   for (const aid in (cfg.areas || {})) {
-    const A = cfg.areas[aid];
+    const A = cfg.areas[aid], items = [];
     for (const oid in (A.o || {})) {
       const o = A.o[oid], st = ((daten.astate || {})[aid] || {})[oid] || {};
-      if (A.typ === "fuel") { if (st.v === "14" || st.v === "res") bereiche.push({ key: `t:${aid}:${oid}:${st.v}`, text: `${A.n} – ${o.n}: Tank ${st.v === "res" ? "Reserve" : "¼"}` }); }
-      else for (const p of liste(o.l)) { const x = (st.i || {})[p.id]; if (x && (x.s === "fehlt" || x.s === "kaputt")) bereiche.push({ key: `p:${aid}:${oid}:${p.id}:${x.s}`, text: `${A.n} – ${o.n}: ${p.n} ${x.s}${x.note ? " (" + x.note + ")" : ""}` }); }
+      if (A.typ === "fuel") { if (st.v === "14" || st.v === "res") items.push({ key: `t:${aid}:${oid}:${st.v}`, text: `${o.n}: Tank ${st.v === "res" ? "Reserve" : "¼"}` }); }
+      else for (const p of liste(o.l)) { const x = (st.i || {})[p.id]; if (x && (x.s === "fehlt" || x.s === "kaputt")) items.push({ key: `p:${aid}:${oid}:${p.id}:${x.s}`, text: `${o.n}: ${p.n} ${x.s}${x.note ? " (" + x.note + ")" : ""}` }); }
     }
+    const an = String((A.mail || {}).an || "").split(/[\s,;]+/).filter(x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
+    bereiche.push({ n: A.n, an, items });
   }
   const m = cfg.mail || {};
   const an = String(m.an || "").split(/[\s,;]+/).filter(x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
-  return { bestellen: m.best === false ? [] : bestellen, verfall: m.exp === false ? [] : verfall, fuell: m.fill === false ? [] : fuell, bereiche: m.areas === false ? [] : bereiche, an };
+  return { bestellen: m.best === false ? [] : bestellen, verfall: m.exp === false ? [] : verfall, fuell: m.fill === false ? [] : fuell, bereiche, an };
+}
+
+async function senden(an, betreff, felder) {
+  const body = { _subject: betreff, _template: "box", _captcha: "false" };
+  if (an.length > 1) body._cc = an.slice(1).join(",");
+  for (const [k, v] of felder) body[k] = v;
+  body["App öffnen"] = APP;
+  const m = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(an[0]), {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", Referer: APP + "/", Origin: APP },
+    body: JSON.stringify(body)
+  });
+  const txt = await m.text(); console.log("FormSubmit:", m.status, txt);
+  if (!m.ok || /"success"\s*:\s*"?false/.test(txt)) throw new Error("Mail nicht verschickt");
 }
 
 async function main() {
   const res = await fetch(DB + ".json"); if (!res.ok) throw new Error("Datenbank nicht erreichbar: " + res.status);
   const daten = (await res.json()) || {};
   const r = auswerten(daten);
-  if (!r.an.length) { console.log("Keine Empfänger eingetragen (Admin → Einstellungen)."); return; }
   const vorher = new Set(liste((daten.mailstate || {}).keys));
-  const jetzt = [...r.bestellen, ...r.verfall, ...r.fuell, ...r.bereiche].map(x => x.key);
-  const neu = new Set(jetzt.filter(k => !vorher.has(k)));
-  console.log(`Nachbestellen: ${r.bestellen.length}, Verfall: ${r.verfall.length}, neu: ${neu.size}`);
-  if (neu.size || TEST) {
-    const mark = x => (neu.has(x.key) ? "NEU · " : "") + x.text;
-    const nb = r.bestellen.filter(x => neu.has(x.key)).length, nv = r.verfall.filter(x => neu.has(x.key)).length, nf = r.fuell.filter(x => neu.has(x.key)).length, na = r.bereiche.filter(x => neu.has(x.key)).length;
-    const betreff = TEST ? "San-Lager: Testmail" : "San-Lager: " + [nb ? nb + " Artikel nachbestellen" : "", nv ? nv + " × Verfall" : "", nf ? nf + " × Füllstand niedrig" : "", na ? na + " × Bereiche" : ""].filter(Boolean).join(", ");
-    const body = { _subject: betreff, _template: "box", _captcha: "false" };
-    if (r.an.length > 1) body._cc = r.an.slice(1).join(",");
-    body["Nachbestellen"] = r.bestellen.length ? r.bestellen.map(mark).join("\n") : "nichts";
-    if ((daten.cfg.mail || {}).exp !== false) body["Verfall"] = r.verfall.length ? r.verfall.map(mark).join("\n") : "nichts";
-    if ((daten.cfg.mail || {}).fill !== false) body["Füllstand"] = r.fuell.length ? r.fuell.map(mark).join("\n") : "alles ok";
-    if ((daten.cfg.mail || {}).areas !== false) body["Weitere Bereiche"] = r.bereiche.length ? r.bereiche.map(mark).join("\n") : "alles ok";
-    body["San-Lager öffnen"] = APP;
-    const m = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(r.an[0]), {
-      method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", Referer: APP + "/", Origin: APP },
-      body: JSON.stringify(body)
-    });
-    const txt = await m.text(); console.log("FormSubmit:", m.status, txt);
-    if (!m.ok || /"success"\s*:\s*"?false/.test(txt)) throw new Error("Mail nicht verschickt");
+  const alle = [...r.bestellen, ...r.verfall, ...r.fuell, ...r.bereiche.flatMap(b => b.items)].map(x => x.key);
+  const mark = x => (vorher.has(x.key) ? "" : "NEU · ") + x.text;
+  let fehler = 0;
+  // San-Lager
+  const sanKeys = [...r.bestellen, ...r.verfall, ...r.fuell];
+  const sanNeu = sanKeys.filter(x => !vorher.has(x.key));
+  console.log(`San: ${sanKeys.length} offen, ${sanNeu.length} neu, Empfänger ${r.an.length}`);
+  if (r.an.length && (sanNeu.length || TEST)) {
+    const m = daten.cfg.mail || {}, felder = [["Nachbestellen", r.bestellen.length ? r.bestellen.map(mark).join("\n") : "nichts"]];
+    if (m.exp !== false) felder.push(["Verfall", r.verfall.length ? r.verfall.map(mark).join("\n") : "nichts"]);
+    if (m.fill !== false) felder.push(["Füllstand", r.fuell.length ? r.fuell.map(mark).join("\n") : "alles ok"]);
+    try { await senden(r.an, TEST ? "San-Lager: Testmail" : `San-Lager: ${sanNeu.length} neue Meldung${sanNeu.length > 1 ? "en" : ""}`, felder); } catch (e) { console.error(e.message); fehler++; }
   }
-  const s = await fetch(DB + "/mailstate.json", { method: "PUT", body: JSON.stringify({ keys: jetzt, at: Date.now() }) });
+  // Weitere Bereiche, jeweils eigene Empfänger
+  for (const b of r.bereiche) {
+    const neu = b.items.filter(x => !vorher.has(x.key));
+    console.log(`${b.n}: ${b.items.length} offen, ${neu.length} neu, Empfänger ${b.an.length}`);
+    if (!b.an.length || !(neu.length || TEST)) continue;
+    try { await senden(b.an, TEST ? `${b.n}: Testmail` : `${b.n}: ${neu.length} neue Meldung${neu.length > 1 ? "en" : ""}`, [[b.n, b.items.length ? b.items.map(mark).join("\n") : "alles ok"]]); } catch (e) { console.error(e.message); fehler++; }
+  }
+  const s = await fetch(DB + "/mailstate.json", { method: "PUT", body: JSON.stringify({ keys: alle, at: Date.now() }) });
   if (!s.ok) throw new Error("Status nicht gespeichert: " + s.status);
+  if (fehler) throw new Error(fehler + " Mail(s) nicht verschickt");
 }
 if (process.argv[1] && process.argv[1].endsWith("mail-check.mjs")) main().catch(e => { console.error(e.message); process.exit(1); });
