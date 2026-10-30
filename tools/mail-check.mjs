@@ -34,9 +34,14 @@ export function auswerten(daten) {
     else if (e <= bald) verfall.push({ key: `v:${l}:${i}:b`, d: e, text: `läuft ab ${mm}: ${name(i)} – ${ort}` });
   }
   verfall.sort((a, b) => a.d.localeCompare(b.d));
+  const fuell = [], FN = { "14": "noch ca. ¼", leer: "LEER" };
+  for (const b in bags) for (const i in ((daten.fill || {})[b] || {})) {
+    const v = daten.fill[b][i].v; if (!items[i] || !FN[v]) continue;
+    fuell.push({ key: `f:${b}:${i}:${v}`, text: `${FN[v]}: ${name(i)} – ${bags[b].n}` });
+  }
   const m = cfg.mail || {};
   const an = String(m.an || "").split(/[\s,;]+/).filter(x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
-  return { bestellen: m.best === false ? [] : bestellen, verfall: m.exp === false ? [] : verfall, an };
+  return { bestellen: m.best === false ? [] : bestellen, verfall: m.exp === false ? [] : verfall, fuell: m.fill === false ? [] : fuell, an };
 }
 
 async function main() {
@@ -45,17 +50,18 @@ async function main() {
   const r = auswerten(daten);
   if (!r.an.length) { console.log("Keine Empfänger eingetragen (Admin → Einstellungen)."); return; }
   const vorher = new Set(liste((daten.mailstate || {}).keys));
-  const jetzt = [...r.bestellen, ...r.verfall].map(x => x.key);
+  const jetzt = [...r.bestellen, ...r.verfall, ...r.fuell].map(x => x.key);
   const neu = new Set(jetzt.filter(k => !vorher.has(k)));
   console.log(`Nachbestellen: ${r.bestellen.length}, Verfall: ${r.verfall.length}, neu: ${neu.size}`);
   if (neu.size || TEST) {
     const mark = x => (neu.has(x.key) ? "NEU · " : "") + x.text;
-    const nb = r.bestellen.filter(x => neu.has(x.key)).length, nv = r.verfall.filter(x => neu.has(x.key)).length;
-    const betreff = TEST ? "San-Lager: Testmail" : "San-Lager: " + [nb ? nb + " Artikel nachbestellen" : "", nv ? nv + " × Verfall" : ""].filter(Boolean).join(", ");
+    const nb = r.bestellen.filter(x => neu.has(x.key)).length, nv = r.verfall.filter(x => neu.has(x.key)).length, nf = r.fuell.filter(x => neu.has(x.key)).length;
+    const betreff = TEST ? "San-Lager: Testmail" : "San-Lager: " + [nb ? nb + " Artikel nachbestellen" : "", nv ? nv + " × Verfall" : "", nf ? nf + " × Füllstand niedrig" : ""].filter(Boolean).join(", ");
     const body = { _subject: betreff, _template: "box", _captcha: "false" };
     if (r.an.length > 1) body._cc = r.an.slice(1).join(",");
     body["Nachbestellen"] = r.bestellen.length ? r.bestellen.map(mark).join("\n") : "nichts";
     if ((daten.cfg.mail || {}).exp !== false) body["Verfall"] = r.verfall.length ? r.verfall.map(mark).join("\n") : "nichts";
+    if ((daten.cfg.mail || {}).fill !== false) body["Füllstand"] = r.fuell.length ? r.fuell.map(mark).join("\n") : "alles ok";
     body["San-Lager öffnen"] = APP;
     const m = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(r.an[0]), {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", Referer: APP + "/", Origin: APP },
