@@ -24,7 +24,7 @@ export function auswerten(daten) {
   const bestellen = [];
   for (const i in items) {
     const it = items[i], lg = (st.lager || {})[i] || 0, def = fehlt[i] || 0, rest = lg - def, mel = it.min || 0, ziel = Math.max(it.ziel || 0, mel);
-    if (rest <= mel) { const menge = Math.max(0, ziel - rest); if (menge > 0) bestellen.push({ key: "b:" + i, text: `${menge} ${it.u || ""} ${name(i)} (Lager ${lg}, fehlt in Rucksäcken ${def})` }); }
+    if (rest <= mel) { const menge = Math.max(0, ziel - rest); if (menge > 0) bestellen.push({ key: "b:" + i, text: `${menge} ${(it.fill === true || (it.fill === undefined && /sauerstoff\s*-?\s*flasche|o2[\s-]*flasche/i.test(it.n))) ? "Flasche" : it.u === "VE" && +it.ve > 0 ? "VE à " + it.ve + " Stk" : (it.u || "Stk")} ${name(i)} (Lager ${lg}, fehlt in Rucksäcken ${def})` }); }
   }
   const verfall = [], jetzt = monat(0), bald = monat(3);
   for (const l in (daten.exp || {})) for (const i in daten.exp[l]) {
