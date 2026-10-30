@@ -77,6 +77,13 @@ button.li:hover{background:var(--soft)}
 .cat{display:flex;align-items:center;gap:10px;padding:14px 12px 6px;border-top:1px solid var(--line);background:var(--bg)}
 .list>.cat:first-child{border-top:0}
 .cl{font-family:var(--f-disp);font-weight:700;font-size:20px;width:30px;height:30px;display:grid;place-items:center;border-radius:6px;background:var(--ink);color:var(--bg);flex:none}
+.cl-X{background:#ffffff;color:#1a1a1a;box-shadow:inset 0 0 0 1.5px #b9c0c9}
+.cl-A{background:#8ec5f5;color:#0b2a4a}
+.cl-B{background:#1d3f8f;color:#ffffff}
+.cl-C{background:#d4111b;color:#ffffff}
+.cl-D{background:#8a939e;color:#ffffff}
+.cl-E{background:#e6d5b0;color:#4a3b1a}
+.cl-Z,.cl-G,.cl-H{background:#3d4a59;color:#ffffff}
 .cat .t{font-family:var(--f-disp);font-weight:600;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .d-blau{background:var(--blau)} .d-rot{background:var(--rot)} .d-lager{background:var(--mute)} .d-gruen{background:#2e9d5b} .d-orange{background:#e8821e} .d-grau{background:#8a96a3}
@@ -301,7 +308,7 @@ function vHome(S){
   const ex=expList();
   if(ex.length)h+=`<section class="sec"><h2>Läuft bald ab</h2><div class="list">${ex.map(x=>`<button class="li" data-act="sheet" data-l="${x.l}" data-i="${x.i}"><span class="dot d-${locCol(x.l)}"></span><span class="nm"><b>${esc(CFG.items[x.i].n)}</b><i>${esc(CFG.items[x.i].d)}</i><small>${esc(locName(x.l))}</small></span><span class="pill p-${x.st}">${x.st==="crit"?"abgelaufen":"bis"} ${fmtExp(x.e)}</span></button>`).join("")}</div></section>`;
   h+=`<section class="sec"><h2>Nachbestellen</h2>`;
-  h+=ro.length?`<p class="muted small" style="margin:0">Fällig, wenn im Lager nach dem Auffüllen aller Rucksäcke nur noch der Meldebestand übrig ist. Bestellt wird bis zum Zielbestand.</p><div class="list">${ro.map(r=>`<button class="li" data-act="sheet" data-l="lager" data-i="${r.i}"><span class="cl" style="width:26px;height:26px;font-size:15px">${CLET[CFG.items[r.i].c]||"+"}</span><span class="nm"><b>${esc(CFG.items[r.i].n)}</b><i>${esc(CFG.items[r.i].d)}</i><small>im Lager ${r.lg}${r.def?` · Rucksäcke brauchen ${r.def}`:""}</small></span><span class="qty"><b>${r.need}</b> <small>${esc(CFG.items[r.i].u)}</small></span></button>`).join("")}</div>`:`<div class="empty">Alles ausreichend vorrätig.</div>`;
+  h+=ro.length?`<p class="muted small" style="margin:0">Fällig, wenn im Lager nach dem Auffüllen aller Rucksäcke nur noch der Meldebestand übrig ist. Bestellt wird bis zum Zielbestand.</p><div class="list">${ro.map(r=>`<button class="li" data-act="sheet" data-l="lager" data-i="${r.i}"><span class="cl cl-${CFG.items[r.i].c}" style="width:26px;height:26px;font-size:15px">${CLET[CFG.items[r.i].c]||"+"}</span><span class="nm"><b>${esc(CFG.items[r.i].n)}</b><i>${esc(CFG.items[r.i].d)}</i><small>im Lager ${r.lg}${r.def?` · Rucksäcke brauchen ${r.def}`:""}</small></span><span class="qty"><b>${r.need}</b> <small>${esc(CFG.items[r.i].u)}</small></span></button>`).join("")}</div>`:`<div class="empty">Alles ausreichend vorrätig.</div>`;
   h+=`</section><section class="sec"><h2>Letzte Buchungen</h2>${histList(BOOK.slice(0,8),false)}</section>`;
   return h;
 }
@@ -311,7 +318,7 @@ function histList(list,del){
     const txt=b.kind==="inventur"?`${ln.length} Positionen · ${esc(locName(main.l))}`:`${Math.abs(main.d||0)}× ${esc(iname(main.i))}${new Set(ln.map(x=>x.i)).size>1?" + "+(new Set(ln.map(x=>x.i)).size-1)+" weitere":""} · ${esc(locName(main.l))}`;
     return`<div class="li"><span class="nm"><b>${KIND[b.kind]||b.kind}</b> <i>${txt}</i><small>${d.toLocaleDateString("de-DE")} ${d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}${b.who?" · "+esc(b.who):""}${b.note?" · "+esc(b.note):""}</small></span>${del?`<button class="btn dng small" data-act="storno" data-id="${b.id}">Storno</button>`:""}</div>`}).join("")}</div>`;
 }
-function catHead(c){return`<div class="cat"><span class="cl">${CLET[c]}</span><span class="t">${CATS[c]}</span></div>`}
+function catHead(c){return`<div class="cat"><span class="cl cl-${c}">${CLET[c]}</span><span class="t">${CATS[c]}</span></div>`}
 function vBags(S){
   const bags=Object.keys(CFG.bags);if(!bagSel||!CFG.bags[bagSel])bagSel=bags[0];
   if(!bagSel)return'<div class="empty">Noch kein Rucksack angelegt. Rucksäcke legst du im Reiter Admin an.</div>';
@@ -424,7 +431,7 @@ function drawSheet(){
   const soll=l==="lager"?null:(bagLines(l).find(x=>x.i===sheet.i)||{}).soll||0;
   const ist=(S[l]||{})[sheet.i]||0,lg=S.lager[sheet.i]||0,isBag=l!=="lager";
   el.innerHTML=`<div class="pan" role="dialog" aria-modal="true" aria-label="Buchung">
-   <div class="row"><span class="cl">${CLET[it.c]}</span><span class="muted small sp">${CATS[it.c]}</span><button class="btn" data-act="close">Schließen</button></div>
+   <div class="row"><span class="cl cl-${it.c}">${CLET[it.c]}</span><span class="muted small sp">${CATS[it.c]}</span><button class="btn" data-act="close">Schließen</button></div>
    <div class="sh-t">${esc(it.n)}${it.d?` <span class="muted">${esc(it.d)}</span>`:""}</div>
    <div class="chips">${locs.map(x=>`<button class="chip" data-act="sloc" data-l="${x}" aria-pressed="${x===l}"><span class="dot d-${locCol(x)}"></span>${esc(locName(x))}</button>`).join("")}</div>
    <div class="stock">${isBag?`<div>Im Rucksack<b>${ist}<small class="muted">/${soll}</small></b></div>`:""}<div>Im Lager<b>${lg}</b></div><div>Einheit<b style="font-family:var(--f-body)">${esc(it.u)}</b></div></div>
@@ -470,7 +477,7 @@ function vBagEdit(){
   let h=`<div class="row"><span class="muted small sp">Bestückung „${esc(T.n)}“${shared.length?` · gilt auch für ${shared.map(x=>esc(CFG.bags[x].n)).join(", ")}`:""}</span><button class="btn" data-act="es" data-k="bag">⚙ Rucksack</button></div><div class="list">`;
   const secs=T.sec.map((x,k)=>({...x,k})).sort((a,c)=>CORD.indexOf(a.c)-CORD.indexOf(c.c)||a.k-c.k);
   for(const sc of secs){
-    h+=`<div class="shd"><span class="cl" style="width:26px;height:26px;font-size:15px">${CLET[sc.c]}</span><span class="t">${esc(sc.n)}</span><button class="lnk" data-act="es" data-k="sec" data-s="${sc.k}">✎ Fach</button></div>`;
+    h+=`<div class="shd"><span class="cl cl-${sc.c}" style="width:26px;height:26px;font-size:15px">${CLET[sc.c]}</span><span class="t">${esc(sc.n)}</span><button class="lnk" data-act="es" data-k="sec" data-s="${sc.k}">✎ Fach</button></div>`;
     sc.l.forEach((l,j)=>{const it=CFG.items[l.i];if(!it)return;h+=`<div class="eline${l.s?"":" zero"}"><button class="nmb" data-act="es" data-k="item" data-i="${l.i}"><b>${esc(it.n)}</b><i>${esc(it.d)}</i></button><span class="mini"><button data-act="lstep" data-k="${sc.k}" data-j="${j}" data-d="-1" aria-label="weniger">−</button><span>${l.s}</span><button data-act="lstep" data-k="${sc.k}" data-j="${j}" data-d="1" aria-label="mehr">+</button></span>${l.s?"":`<button class="x" data-act="ldel" data-k="${sc.k}" data-j="${j}" title="Aus Bestückung entfernen">✕</button>`}</div>`});
     h+=`<button class="lnk addl" data-act="es" data-k="add" data-s="${sc.k}">＋ Artikel in „${esc(sc.n)}“</button>`;
   }
