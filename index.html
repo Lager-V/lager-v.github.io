@@ -357,7 +357,7 @@ function chartSvg(m){
 function niceStep(max){const r=max/4,p=Math.pow(10,Math.floor(Math.log10(r)));for(const f of [1,2,5,10])if(f*p>=r)return Math.max(1,f*p);return Math.max(1,p*10)}
 function vAdmin(){
   if(!isUnl())return pinBox();
-  const V=[["bags","Rucksäcke"],["lager","Artikel & Lager"],["labels","QR-Etiketten"],["hist","Verlauf"],["set","Einstellungen"]];
+  const V=[["bags","Rucksäcke"],["lager","Artikel & Lager"],["labels","QR-Etiketten"],["mail","E-Mail"],["hist","Verlauf"],["set","Einstellungen"]];
   let h=`<div class="row"><h2 class="sp">Admin</h2><button class="btn small" data-act="lock">Abmelden</button></div><div class="chips">${V.map(([v,n])=>`<button class="chip" data-act="adm" data-v="${v}" aria-pressed="${adm===v}">${n}</button>`).join("")}</div>`;
   if(adm==="bags"){const bags=Object.keys(CFG.bags);if(!bagSel||!CFG.bags[bagSel])bagSel=bags[0];
     h+=`<div class="chips">${bags.map(b=>`<button class="chip" data-act="selbag" data-b="${b}" aria-pressed="${b===bagSel}"><span class="dot d-${locCol(b)}"></span>${esc(CFG.bags[b].n)}</button>`).join("")}<button class="chip" data-act="bagnew">＋ Neuer Rucksack</button></div>`;
@@ -370,14 +370,14 @@ function vAdmin(){
    <div class="row"><span class="muted small sp">A4, 4 Etiketten pro Reihe. Am besten am PC drucken.</span><button class="btn pri" data-act="labdl">Etiketten drucken</button></div>
    <div class="labels" id="labels"></div></div>`;
   }
-  else if(adm==="hist")h+=`<p class="muted small" style="margin:0">Falsche Buchungen hier stornieren.</p>`+histList(BOOK.slice(0,200),true);
-  else h+=`<div class="editbar"><b>Startseite für den Lager-Aushang</b><span class="muted small">Dieser Link bzw. QR-Code führt direkt in die Übersicht:</span><code style="word-break:break-all">${esc(location.origin+location.pathname)}</code><div id="homeqr" style="background:#fff;padding:10px;border-radius:8px;width:max-content"></div></div>
-   <div class="editbar"><b>E-Mail-Benachrichtigung</b><span class="muted small">Wer soll eine Mail bekommen? Eine Adresse pro Zeile. Gemailt wird nur, wenn etwas neu fällig wird.</span>
+  else if(adm==="mail")h+=`<div class="editbar"><b>E-Mail-Benachrichtigung</b><span class="muted small">Wer soll eine Mail bekommen? Eine Adresse pro Zeile. Gemailt wird nur, wenn etwas neu fällig wird.</span>
    <textarea id="mail-an" rows="3" placeholder="name@beispiel.de">${esc(((CFG.mail||{}).an||"").split(/[\s,;]+/).filter(Boolean).join("\n"))}</textarea>
    <label class="row small"><input type="checkbox" id="mail-best" ${(CFG.mail||{}).best===false?"":"checked"}> Nachbestellen</label>
    <label class="row small"><input type="checkbox" id="mail-exp" ${(CFG.mail||{}).exp===false?"":"checked"}> Verfall (abgelaufen / in 3 Monaten)</label>
    <div class="row"><button class="btn pri" data-act="mailsave">Speichern</button></div>
-   <span class="muted small">Geprüft wird stündlich. Die <b>erste</b> Adresse bekommt beim allerersten Mal eine Bestätigungsmail von FormSubmit – bitte dort auf „Activate“ klicken (auch nach einem Wechsel der ersten Adresse). Hinweis: Die Adressen liegen in der Lager-Datenbank, die jeder mit dem Link lesen kann.</span></div>
+   <span class="muted small">Geprüft wird stündlich. Die <b>erste</b> Adresse bekommt beim allerersten Mal eine Bestätigungsmail von FormSubmit – bitte dort auf „Activate“ klicken (auch nach einem Wechsel der ersten Adresse). Hinweis: Die Adressen liegen in der Lager-Datenbank, die jeder mit dem Link lesen kann.</span></div>`;
+  else if(adm==="hist")h+=`<p class="muted small" style="margin:0">Falsche Buchungen hier stornieren.</p>`+histList(BOOK.slice(0,200),true);
+  else h+=`<div class="editbar"><b>Startseite für den Lager-Aushang</b><span class="muted small">Dieser Link bzw. QR-Code führt direkt in die Übersicht:</span><code style="word-break:break-all">${esc(location.origin+location.pathname)}</code><div id="homeqr" style="background:#fff;padding:10px;border-radius:8px;width:max-content"></div></div>
    <div class="editbar"><b>Buchungen zusammenfassen</b><span class="muted small">${BOOK.length} einzelne Buchungen gespeichert. Ab etwa 1500 sollten sie zusammengefasst werden: Bestände und Monatsstatistik bleiben erhalten, nur der Einzelverlauf wird gelöscht.</span><div class="row"><button class="btn" data-act="compact" ${BOOK.length?"":"disabled"}>Zusammenfassen</button></div></div>`;
   return h;
 }
