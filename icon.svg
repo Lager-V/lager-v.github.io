@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d42a2f"/><stop offset="1" stop-color="#a5161c"/></linearGradient>
+    <linearGradient id="bag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd23f"/><stop offset="1" stop-color="#f0b419"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <text x="256" y="104" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" font-size="62" letter-spacing="14" fill="#ffffff">DLRG</text>
+  <path d="M212 172 v-20 a24 24 0 0 1 24 -24 h40 a24 24 0 0 1 24 24 v20" fill="none" stroke="#ffd23f" stroke-width="18" stroke-linecap="round"/>
+  <rect x="120" y="160" width="272" height="268" rx="56" fill="url(#bag)"/>
+  <path d="M120 216 a56 56 0 0 1 56 -56 h160 a56 56 0 0 1 56 56 v8 h-272z" fill="#ffe27a"/>
+  <line x1="128" y1="226" x2="384" y2="226" stroke="#c98f12" stroke-width="5"/>
+  <rect x="152" y="262" width="208" height="134" rx="30" fill="#f4bf26" stroke="#c98f12" stroke-width="5"/>
+  <text x="256" y="356" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" font-size="82" letter-spacing="2" fill="#a5161c">SAN</text>
+  <rect x="96" y="440" width="320" height="12" rx="6" fill="#7a0f13" opacity=".5"/>
+</svg>
