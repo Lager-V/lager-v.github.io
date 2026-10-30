@@ -228,7 +228,9 @@ function consumption(){ // {item:{ym:n}}
 }
 
 /* ---------- Render ---------- */
-let pending=false;
+let pending=false,lastView="";
+const OPEN=new Set(["labdet"].filter(()=>ls("labopen")));
+let LABCACHE=null;
 function busy(){const a=document.activeElement;return a&&a.closest&&a.closest("#main")&&a.matches("input,select")}
 document.addEventListener("focusout",()=>setTimeout(()=>{if(pending&&!busy()){pending=false;render()}},50));
 function render(){
@@ -237,9 +239,11 @@ function render(){
   const m=$("#main");
   if(!loaded.cfg){m.innerHTML='<div class="empty">Bestand wird geladen …</div>';return}
   if(!CFG){m.innerHTML='<div class="empty"><b>Noch keine Materialliste hinterlegt.</b><br>Sobald die Artikel und Rucksäcke eingetragen sind, erscheinen sie hier.</div>';return}
-  const S=stock();
+  const S=stock(),y=scrollY,sameView=lastView===tab+"|"+edit;
   m.innerHTML=({home:vHome,bags:vBags,lager:vLager,stats:vStats,admin:vAdmin}[tab])(S);
+  m.querySelectorAll("details[id]").forEach(d=>{if(OPEN.has(d.id))d.open=true});
   if(tab==="admin")drawLabels();
+  if(sameView)scrollTo(0,y);lastView=tab+"|"+edit;
 }
 function vHome(S){
   const ro=reorder(S),bags=Object.keys(CFG.bags);
@@ -329,13 +333,13 @@ function vAdmin(){
   if(CFG.pin&&!unlocked){let ok=false;try{ok=sessionStorage.getItem("sl-unl")===CFG.pin}catch(e){}if(ok)unlocked=true;else return`<section class="sec"><h2>Verwaltung</h2><p class="muted" style="margin:0">Für Artikel, Bestückung und Etiketten bitte die Verwaltungs-PIN eingeben. Buchen geht ohne PIN.</p><div class="row"><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="PIN"><button class="btn pri" data-act="unlock">Entsperren</button></div></section>`}
   let h=`<p class="muted" style="margin:0">Rucksäcke, Bestückung und Artikel bearbeitest du direkt im Reiter <b>Rucksäcke</b> bzw. <b>Lager</b> über „✎ Bearbeiten“.</p>`;
   // Etiketten
-  h+=`<details id="labdet" ${ls("labopen")?"open":""}><summary>QR-Etiketten</summary><div class="sec">
+  h+=`<details id="labdet"><summary>QR-Etiketten</summary><div class="sec">
    <label class="f">Etiketten für<select id="labsel" data-act="labsel"><option value="lager" ${labLoc==="lager"?"selected":""}>Lager (Fächer)</option>${Object.keys(CFG.bags).map(b=>`<option value="${b}" ${labLoc===b?"selected":""}>${esc(CFG.bags[b].n)}</option>`).join("")}</select></label>
    <div class="row"><span class="muted small sp">A4, 4 Etiketten pro Reihe. Am besten am PC drucken.</span><button class="btn pri" data-act="labdl">Etiketten drucken</button></div>
    <div class="labels" id="labels"></div></div></details>`;
   // Verlauf + Pflege
-  h+=`<details><summary>Buchungsverlauf</summary>${histList(BOOK.slice(0,150),true)}</details>
-   <details><summary>Einstellungen</summary><div class="sec">
+  h+=`<details id="det-hist"><summary>Buchungsverlauf</summary>${histList(BOOK.slice(0,150),true)}</details>
+   <details id="det-set"><summary>Einstellungen</summary><div class="sec">
    <div class="row"><label class="f sp">${CFG.pin?"Neue Verwaltungs-PIN":"Verwaltungs-PIN festlegen"}<input id="newpin" type="password" inputmode="numeric" autocomplete="new-password" placeholder="mind. 4 Ziffern"></label><button class="btn" data-act="setpin">PIN speichern</button></div>
    <p class="muted small" style="margin:0">${CFG.pin?"Verwaltung ist mit PIN geschützt. Buchen geht für alle ohne PIN.":"Noch keine PIN: Jeder kann die Verwaltung öffnen."}</p>
    <p class="muted small" style="margin:0">${BOOK.length} einzelne Buchungen gespeichert. Ab etwa 1500 sollten sie zusammengefasst werden: Bestände und Monatsstatistik bleiben erhalten, nur der Einzelverlauf wird gelöscht.</p>
@@ -345,7 +349,10 @@ function vAdmin(){
 function qrUrl(l,i){return location.origin+location.pathname+(location.search||"")+"#q-"+l+"-"+i}
 function labelItems(){return labLoc==="lager"?itemsSorted():bagLines(labLoc).map(x=>x.i)}
 function drawLabels(){
-  const el=$("#labels");if(!el||!$("#labdet").open)return;el.innerHTML="";
+  const el=$("#labels");if(!el||!$("#labdet").open)return;
+  const key=labLoc+"|"+labelItems().map(i=>itemLabel(i)).join(",");
+  if(LABCACHE&&LABCACHE.key===key){el.replaceWith(LABCACHE.node);return}
+  el.innerHTML="";LABCACHE={key,node:el};
   for(const i of labelItems()){const it=CFG.items[i],d=document.createElement("div");d.className="lab";const q=document.createElement("div");d.appendChild(q);
     d.insertAdjacentHTML("beforeend",`<b>${esc(it.n)}${it.d?"<br>"+esc(it.d):""}</b><small>${esc(locName(labLoc))}</small>`);el.appendChild(d);
     if(window.QRCode)new QRCode(q,{text:qrUrl(labLoc,i),width:220,height:220,correctLevel:QRCode.CorrectLevel.M});}
@@ -500,7 +507,7 @@ document.addEventListener("change",async e=>{
   else if(t.dataset.bag){CFG.bags[t.dataset.bag].n=t.value.trim()||CFG.bags[t.dataset.bag].n;await saveCfg("Gespeichert")}
 });
 document.addEventListener("keydown",e=>{const t=e.target;if(e.key==="Enter"&&t.id&&t.id.startsWith("la-")){e.preventDefault();document.querySelector(`[data-act=ladd][data-k="${t.id.slice(3)}"]`).click()}});
-document.addEventListener("toggle",e=>{if(e.target.id==="labdet"){ls("labopen",e.target.open?"1":"");drawLabels()}},true);
+document.addEventListener("toggle",e=>{const d=e.target;if(!d.id)return;if(d.open)OPEN.add(d.id);else OPEN.delete(d.id);if(d.id==="labdet"){ls("labopen",d.open?"1":"");drawLabels()}},true);
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet"){sheet=null;drawSheet()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sheet){sheet=null;drawSheet()}});
 
