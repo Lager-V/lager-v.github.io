@@ -36,7 +36,8 @@
   --blau:#6a9fe6; --rot:#ee6b6b; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{background:var(--bg);color:var(--ink)}
-body{font-family:var(--f-body);font-size:15px;line-height:1.45}
+body{font-family:var(--f-body);font-size:16px;line-height:1.45}
+input,select,textarea,button{font-size:16px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--accent)}
 .wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--accent);color:var(--accent-ink)}
@@ -47,17 +48,19 @@ nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 nav button{font-family:var(--f-disp);font-size:17px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:none;border:0;color:inherit;opacity:.72;padding:8px 10px 10px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
 nav button[aria-current="true"]{opacity:1;border-color:currentColor}
 main{padding-block:18px 60px;display:flex;flex-direction:column;gap:22px}
-h2{font-family:var(--f-disp);font-size:21px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin:0;text-wrap:balance}
+h2{font-family:var(--f-disp);font-size:23px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin:0;text-wrap:balance}
 h3{font-family:var(--f-disp);font-size:17px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin:0;color:var(--mute)}
 .sec{display:flex;flex-direction:column;gap:10px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .sp{flex:1}
-.muted{color:var(--mute)} .small{font-size:13px}
+.muted{color:var(--mute)} .small{font-size:14px}
+.btn.small{font-size:14px;padding:7px 12px}
+.sht{font-size:20px;font-weight:700}
 .num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
 .kpi b{display:block;font-family:var(--f-num);font-size:26px;line-height:1.1}
-.kpi span{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
+.kpi span{display:block;font-size:13px;line-height:1.3;color:var(--mute);hyphens:auto;overflow-wrap:anywhere}
 .list{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line);min-width:0}
 .li:first-child{border-top:0}
@@ -66,15 +69,15 @@ button.li{width:100%;background:none;border-left:0;border-right:0;border-bottom:
 button.li:hover{background:var(--soft)}
 .nm{flex:1;min-width:0}
 .nm b{font-weight:600} .nm i{font-style:normal;color:var(--mute);margin-left:6px}
-.nm small{display:block;color:var(--mute);font-size:12px}
+.nm small{display:block;color:var(--mute);font-size:14px}
 .qty{font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;min-width:64px}
 .qty small{color:var(--mute)}
-.pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pill{font-size:13px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
 .p-ok{background:var(--ok-bg);color:var(--ok)} .p-warn{background:var(--warn-bg);color:var(--warn)} .p-crit{background:var(--crit-bg);color:var(--crit)}
 .cat{display:flex;align-items:center;gap:10px;padding:14px 12px 6px;border-top:1px solid var(--line);background:var(--bg)}
 .list>.cat:first-child{border-top:0}
 .cl{font-family:var(--f-disp);font-weight:700;font-size:20px;width:30px;height:30px;display:grid;place-items:center;border-radius:6px;background:var(--ink);color:var(--bg);flex:none}
-.cat .t{font-family:var(--f-disp);font-weight:600;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+.cat .t{font-family:var(--f-disp);font-weight:600;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .d-blau{background:var(--blau)} .d-rot{background:var(--rot)} .d-lager{background:var(--mute)} .d-gruen{background:#2e9d5b} .d-orange{background:#e8821e} .d-grau{background:#8a96a3}
 .ed-line{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--line);min-width:0;flex-wrap:wrap}
@@ -83,10 +86,10 @@ button.li:hover{background:var(--soft)}
 .mini button{width:36px;height:36px;border:0;background:var(--soft);color:var(--ink);font-size:20px;cursor:pointer}
 .mini span{min-width:36px;text-align:center;font-family:var(--f-num);font-variant-numeric:tabular-nums}
 .x{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--crit);font-size:18px;cursor:pointer;flex:none}
-.x[data-sure]{background:var(--crit);color:#fff;width:auto;padding:0 10px;font-size:13px;font-weight:600}
+.x[data-sure]{background:var(--crit);color:#fff;width:auto;padding:0 10px;font-size:14px;font-weight:600}
 .sechd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px;border-top:1px solid var(--line);background:var(--bg)}
 .list>.sechd:first-child{border-top:0}
-.sechd input{flex:1 1 140px;font-family:var(--f-disp);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.04em}
+.sechd input{flex:1 1 140px;font-family:var(--f-disp);font-weight:600;font-size:18px;text-transform:uppercase;letter-spacing:.04em}
 .addrow{display:flex;gap:8px;padding:8px 12px 12px;border-top:1px dashed var(--line);flex-wrap:wrap}
 .addrow input{flex:1 1 160px}
 .editbar{background:var(--soft);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -96,17 +99,17 @@ textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);bo
 .expbox input{min-height:40px;font-size:16px}
 .eline{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line);min-width:0}
 .eline .nmb{flex:1;min-width:0;background:none;border:0;color:inherit;font:inherit;text-align:left;padding:4px 0;cursor:pointer}
-.eline .nmb b{font-weight:600}.eline .nmb i{font-style:normal;color:var(--mute);margin-left:6px}.eline .nmb small{display:block;color:var(--mute);font-size:12px}
+.eline .nmb b{font-weight:600}.eline .nmb i{font-style:normal;color:var(--mute);margin-left:6px}.eline .nmb small{display:block;color:var(--mute);font-size:14px}
 .eline.zero{opacity:.55}
 .shd{display:flex;align-items:center;gap:10px;padding:12px;border-top:1px solid var(--line);background:var(--bg)}
 .list>.shd:first-child{border-top:0}
-.shd .t{flex:1;font-family:var(--f-disp);font-weight:600;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+.shd .t{flex:1;font-family:var(--f-disp);font-weight:600;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
 .lnk{background:none;border:0;color:var(--accent);font:inherit;font-weight:600;cursor:pointer;padding:8px 4px}
 .addl{display:block;width:100%;text-align:left;padding:10px 12px;border-top:1px dashed var(--line)}
 .fgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .fgrid .full{grid-column:1/-1}
 .stp{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
-.stp .lb b{display:block}.stp .lb small{color:var(--mute);font-size:12px}
+.stp .lb b{display:block}.stp .lb small{color:var(--mute);font-size:14px}
 .search{width:100%;min-height:44px;font-size:16px}
 .card-ed{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 .card-ed .r1{display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:8px}
@@ -127,23 +130,23 @@ textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);bo
 input,select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 9px;min-width:0}
 input[type=number]{width:72px;font-family:var(--f-num)}
 label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
-label.f input,label.f select{text-transform:none;letter-spacing:0;font-size:15px}
+label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing:0;font-size:16px;color:var(--ink)}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:99px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.chip{font:inherit;font-size:16px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:99px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .empty{background:var(--panel);border:1px dashed var(--line);border-radius:8px;padding:18px;color:var(--mute)}
-.note{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:15px}
 /* Bodenblatt */
 #sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;background:rgba(10,16,24,.45)}
 #sheet .pan{background:var(--panel);width:100%;max-width:560px;border-radius:14px 14px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:92%;overflow:auto}
 .sh-t{font-family:var(--f-disp);font-size:28px;font-weight:700;line-height:1.05;text-wrap:balance}
 .step{display:flex;align-items:center;gap:8px}
-.step button{width:52px;height:52px;font-size:26px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer}
+.step button:not(.chip){width:52px;height:52px;font-size:26px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer}
 .step input{width:90px;height:52px;text-align:center;font-size:24px}
 .big{font-size:17px;padding:14px 16px;flex:1}
 .stock{display:flex;gap:18px}
 .stock div{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
-.stock b{display:block;font-family:var(--f-num);font-size:22px;color:var(--ink);letter-spacing:0}
+.stock b{display:block;font-family:var(--f-num);font-size:22px;color:var(--ink);letter-spacing:0;text-transform:none}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:30;font-weight:600;max-width:90%}
 /* Etiketten */
 .labels{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
@@ -156,13 +159,13 @@ label.f input,label.f select{text-transform:none;letter-spacing:0;font-size:15px
 .seasons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 @media (min-width:700px){.seasons{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .sea{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
-.sea h3{color:var(--ink)} .sea ol{margin:6px 0 0;padding-left:18px;font-size:14px} .sea li{margin:2px 0}
-table.ed{border-collapse:collapse;width:100%;font-size:14px}
+.sea h3{color:var(--ink)} .sea ol{margin:6px 0 0;padding-left:18px;font-size:15px} .sea li{margin:2px 0}
+table.ed{border-collapse:collapse;width:100%;font-size:15px}
 table.ed td,table.ed th{padding:5px 6px;border-top:1px solid var(--line);text-align:left;vertical-align:middle}
 table.ed th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
 .scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px}
 details{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-summary{cursor:pointer;font-family:var(--f-disp);font-size:18px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+summary{cursor:pointer;font-family:var(--f-disp);font-size:19px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 details[open] summary{margin-bottom:10px}
 @media (max-width:440px){.kpi b{font-size:22px}.bar{width:50px}}
 @media (prefers-reduced-motion:no-preference){button.li,.chip,.btn{transition:background .12s}}
@@ -299,7 +302,7 @@ function vBags(S){
   const st=bagState(bagSel,S),lines=bagLines(bagSel),t=CFG.types[CFG.bags[bagSel].t];
   let h=`<div class="chips">${bags.map(b=>`<button class="chip" data-act="selbag" data-b="${b}" aria-pressed="${b===bagSel}"><span class="dot d-${locCol(b)}"></span>${esc(CFG.bags[b].n)}</button>`).join("")}</div>`;
   h+=`<section class="sec"><div class="row"><h2 class="sp">${esc(CFG.bags[bagSel].n)}</h2></div>
-   <div class="row"><span class="qty" style="text-align:left">${st.ist}/${st.soll} Teile · ${st.miss} Artikel unter Soll</span><span class="sp"></span>
+   <div class="row"><span class="muted small">${st.ist}/${st.soll} Teile · ${st.miss} Artikel unter Soll</span><span class="sp"></span>
    ${inv&&inv.l===bagSel?`<button class="btn" data-act="invcancel">Abbrechen</button><button class="btn pri" data-act="invsave">Zählung speichern</button>`:`<button class="btn" data-act="invstart" data-l="${bagSel}">Inventur</button><button class="btn pri" data-act="fillall" ${st.miss?"":"disabled"}>Alles aus Lager auffüllen</button>`}</div>`;
   if(inv&&inv.l===bagSel)h+=`<p class="note" style="margin:0">Inventur: tatsächlich vorhandene Menge eintragen. Beim Speichern wird die Differenz gebucht.</p>`;
   let lastC=null;h+=`<div class="list">`;
@@ -349,9 +352,9 @@ function chartSvg(m){
   const W=360,H=170,L=30,B=22,T=10,max=Math.max(1,...m),step=niceStep(max),top=Math.ceil(max/step)*step,bw=(W-L-6)/12;
   const y=v=>T+(H-T-B)*(1-v/top);let g="";
   const sc={0:"var(--blau)",1:"var(--blau)",11:"var(--blau)",5:"var(--warn)",6:"var(--warn)",7:"var(--warn)",2:"var(--ok)",3:"var(--ok)",4:"var(--ok)",8:"var(--rot)",9:"var(--rot)",10:"var(--rot)"};
-  for(let v=0;v<=top;v+=step)g+=`<line x1="${L}" x2="${W-4}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-5}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--mute)" font-family="IBM Plex Mono,monospace">${v}</text>`;
-  m.forEach((v,k)=>{const x=L+k*bw+3,h=(H-T-B)-(y(v)-T);g+=`<rect x="${x}" y="${y(v)}" width="${bw-6}" height="${Math.max(0,h)}" rx="2" fill="${sc[k]}" opacity="${v?0.9:0}"/><text x="${x+(bw-6)/2}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--mute)">${MON[k]}</text>${v?`<text x="${x+(bw-6)/2}" y="${y(v)-3}" text-anchor="middle" font-size="9" fill="var(--ink)" font-family="IBM Plex Mono,monospace">${v}</text>`:""}`});
-  const leg=[["Winter","var(--blau)"],["Frühling","var(--ok)"],["Sommer","var(--warn)"],["Herbst","var(--rot)"]].map((s,k)=>`<rect x="${L+k*78}" y="${H+8}" width="10" height="10" rx="2" fill="${s[1]}"/><text x="${L+k*78+14}" y="${H+17}" font-size="11" fill="var(--ink)">${s[0]}</text>`).join("");
+  for(let v=0;v<=top;v+=step)g+=`<line x1="${L}" x2="${W-4}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-5}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--mute)" font-family="IBM Plex Mono,monospace">${v}</text>`;
+  m.forEach((v,k)=>{const x=L+k*bw+3,h=(H-T-B)-(y(v)-T);g+=`<rect x="${x}" y="${y(v)}" width="${bw-6}" height="${Math.max(0,h)}" rx="2" fill="${sc[k]}" opacity="${v?0.9:0}"/><text x="${x+(bw-6)/2}" y="${H-6}" text-anchor="middle" font-size="12" fill="var(--mute)">${MON[k]}</text>${v?`<text x="${x+(bw-6)/2}" y="${y(v)-3}" text-anchor="middle" font-size="11" fill="var(--ink)" font-family="IBM Plex Mono,monospace">${v}</text>`:""}`});
+  const leg=[["Winter","var(--blau)"],["Frühling","var(--ok)"],["Sommer","var(--warn)"],["Herbst","var(--rot)"]].map((s,k)=>`<rect x="${L+k*78}" y="${H+8}" width="10" height="10" rx="2" fill="${s[1]}"/><text x="${L+k*78+14}" y="${H+17}" font-size="13" fill="var(--ink)">${s[0]}</text>`).join("");
   return`<svg viewBox="0 0 ${W} ${H+26}" role="img" aria-label="Verbrauch je Monat">${g}${leg}</svg>`;
 }
 function niceStep(max){const r=max/4,p=Math.pow(10,Math.floor(Math.log10(r)));for(const f of [1,2,5,10])if(f*p>=r)return Math.max(1,f*p);return Math.max(1,p*10)}
@@ -412,7 +415,7 @@ function drawSheet(){
    <div class="row"><button class="btn pri big" data-act="book" data-k="verbrauch">Verbraucht</button>${isBag?`<button class="btn big" data-act="book" data-k="auffuellen">Aus Lager nachgefüllt</button>`:`<button class="btn big" data-act="book" data-k="eingang">Wareneingang</button>`}</div>
    <label class="f">Bemerkung (optional)<textarea id="snote" rows="2" placeholder="z. B. Sanitätsdienst Stadtfest, Packung beschädigt …">${esc(sheet.note||"")}</textarea></label>
    <span class="muted small" style="margin-top:-8px">Bitte keine Namen oder Daten von Patienten eintragen.</span>
-   <div class="row"><input class="sp" id="swho" placeholder="Name / Kürzel (optional)" value="${esc(ls("who")||"")}"><button class="btn small" data-act="book" data-k="aussort">Abgelaufen / defekt</button></div>
+   <div class="row"><input class="sp" style="flex:1 1 180px" id="swho" placeholder="Name / Kürzel (optional)" value="${esc(ls("who")||"")}"><button class="btn small" data-act="book" data-k="aussort">Abgelaufen / defekt</button></div>
    <div class="expbox"><label class="f sp">Frühester Verfall hier${expOf(l,sheet.i)?` <span class="pill p-${expSt(expOf(l,sheet.i))}">${fmtExp(expOf(l,sheet.i))}</span>`:""}<input type="month" id="sexp" value="${esc(sheet.exp??expOf(l,sheet.i))}"></label><button class="btn small" data-act="expsave">Datum speichern</button>${expOf(l,sheet.i)?`<button class="btn small" data-act="expclr">Entfernen</button>`:""}</div>
    ${canWrite?"":`<p class="note" style="margin:0">Du hast hier nur Leserechte. Bitte den Verantwortlichen um Zugriff als Bearbeiter.</p>`}
   </div>`;
@@ -469,7 +472,7 @@ function sureBtn(act,txt){return`<button class="btn dng" data-act="${act}">${txt
 function editSheet(){
   const sh=sheet,t=sh.tmp,close=`<button class="btn" data-act="close">Abbrechen</button>`;
   if(sh.kind==="item"){const isNew=!sh.i;
-    return`<div class="row"><b class="sp" style="font-size:18px">${isNew?"Neuer Artikel":"Artikel bearbeiten"}</b>${close}</div>
+    return`<div class="row"><b class="sp sht">${isNew?"Neuer Artikel":"Artikel bearbeiten"}</b>${close}</div>
     <div class="fgrid"><label class="f full">Bezeichnung<input data-sf="n" value="${esc(t.n)}" placeholder="z. B. Kompresse"></label>
     <label class="f">Größe / Zusatz<input data-sf="d" value="${esc(t.d)}" placeholder="z. B. 10×10 cm"></label>
     <label class="f">Einheit<input data-sf="u" value="${esc(t.u)}" list="dl-units"></label>
@@ -479,19 +482,19 @@ function editSheet(){
     <div class="row"><button class="btn pri big" data-act="itemsave">Speichern</button></div>
     ${isNew?"":`<div class="row"><span class="sp muted small">Löscht den Artikel auch aus allen Bestückungen.</span>${sh.sure?sureBtn("itemdel2","Wirklich löschen"):sureBtn("itemdel1","Artikel löschen")}</div>`}`}
   if(sh.kind==="sec"){const isNew=sh.s==="new";
-    return`<div class="row"><b class="sp" style="font-size:18px">${isNew?"Neues Fach":"Fach bearbeiten"}</b>${close}</div>
+    return`<div class="row"><b class="sp sht">${isNew?"Neues Fach":"Fach bearbeiten"}</b>${close}</div>
     <label class="f">Name<input data-sf="n" value="${esc(t.n)}" placeholder="z. B. Verbrennungen"></label>
     <label class="f">Kategorie (Sortierung)<select data-sf="c">${catOpts(t.c)}</select></label>
     <div class="row"><button class="btn pri big" data-act="secsave">Speichern</button></div>
     ${isNew?"":`<div class="row"><span class="sp muted small">Entfernt das Fach mit allen Soll-Einträgen.</span>${sh.sure?sureBtn("secdel2","Wirklich löschen"):sureBtn("secdel1","Fach löschen")}</div>`}`}
   if(sh.kind==="add"){const T=CFG.types[CFG.bags[bagSel].t];
-    return`<div class="row"><b class="sp" style="font-size:18px">Artikel hinzufügen</b>${close}</div>
+    return`<div class="row"><b class="sp sht">Artikel hinzufügen</b>${close}</div>
     <label class="f">Artikel<input data-sf="q" list="dl-items" value="${esc(t.q)}" placeholder="suchen oder neu eintippen" autocomplete="off"></label>
     <label class="f">Fach<select data-sf="s">${T.sec.map((x,k)=>`<option value="${k}" ${String(k)===String(t.s)?"selected":""}>${CLET[x.c]} · ${esc(x.n)}</option>`).join("")}</select></label>
     ${stepRow("soll","Soll im Rucksack","",t.soll)}
     <div class="row"><button class="btn pri big" data-act="addsave">Hinzufügen</button></div>${dlItems()}`}
   if(sh.kind==="bag"){const b=CFG.bags[bagSel],T=CFG.types[b.t],shared=Object.keys(CFG.bags).filter(x=>CFG.bags[x].t===b.t&&x!==bagSel);
-    return`<div class="row"><b class="sp" style="font-size:18px">Rucksack</b>${close}</div>
+    return`<div class="row"><b class="sp sht">Rucksack</b>${close}</div>
     <label class="f">Name<input data-sf="n" value="${esc(t.n)}"></label>
     <div class="chips">${COLS.map(([c,n])=>`<button class="chip" data-act="tcol" data-c="${c}" aria-pressed="${t.col===c}"><span class="dot d-${c}"></span>${n}</button>`).join("")}</div>
     <label class="f">Bestückung<select data-sf="t">${Object.keys(CFG.types).map(x=>`<option value="${x}" ${x===t.t?"selected":""}>${esc(CFG.types[x].n)}</option>`).join("")}</select></label>
