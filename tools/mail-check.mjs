@@ -39,9 +39,18 @@ export function auswerten(daten) {
     const v = daten.fill[b][i].v; if (!items[i] || !FN[v]) continue;
     fuell.push({ key: `f:${b}:${i}:${v}`, text: `${FN[v]}: ${name(i)} – ${bags[b].n}` });
   }
+  const bereiche = [];
+  for (const aid in (cfg.areas || {})) {
+    const A = cfg.areas[aid];
+    for (const oid in (A.o || {})) {
+      const o = A.o[oid], st = ((daten.astate || {})[aid] || {})[oid] || {};
+      if (A.typ === "fuel") { if (st.v === "14" || st.v === "res") bereiche.push({ key: `t:${aid}:${oid}:${st.v}`, text: `${A.n} – ${o.n}: Tank ${st.v === "res" ? "Reserve" : "¼"}` }); }
+      else for (const p of liste(o.l)) { const x = (st.i || {})[p.id]; if (x && (x.s === "fehlt" || x.s === "kaputt")) bereiche.push({ key: `p:${aid}:${oid}:${p.id}:${x.s}`, text: `${A.n} – ${o.n}: ${p.n} ${x.s}${x.note ? " (" + x.note + ")" : ""}` }); }
+    }
+  }
   const m = cfg.mail || {};
   const an = String(m.an || "").split(/[\s,;]+/).filter(x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
-  return { bestellen: m.best === false ? [] : bestellen, verfall: m.exp === false ? [] : verfall, fuell: m.fill === false ? [] : fuell, an };
+  return { bestellen: m.best === false ? [] : bestellen, verfall: m.exp === false ? [] : verfall, fuell: m.fill === false ? [] : fuell, bereiche: m.areas === false ? [] : bereiche, an };
 }
 
 async function main() {
@@ -50,18 +59,19 @@ async function main() {
   const r = auswerten(daten);
   if (!r.an.length) { console.log("Keine Empfänger eingetragen (Admin → Einstellungen)."); return; }
   const vorher = new Set(liste((daten.mailstate || {}).keys));
-  const jetzt = [...r.bestellen, ...r.verfall, ...r.fuell].map(x => x.key);
+  const jetzt = [...r.bestellen, ...r.verfall, ...r.fuell, ...r.bereiche].map(x => x.key);
   const neu = new Set(jetzt.filter(k => !vorher.has(k)));
   console.log(`Nachbestellen: ${r.bestellen.length}, Verfall: ${r.verfall.length}, neu: ${neu.size}`);
   if (neu.size || TEST) {
     const mark = x => (neu.has(x.key) ? "NEU · " : "") + x.text;
-    const nb = r.bestellen.filter(x => neu.has(x.key)).length, nv = r.verfall.filter(x => neu.has(x.key)).length, nf = r.fuell.filter(x => neu.has(x.key)).length;
-    const betreff = TEST ? "San-Lager: Testmail" : "San-Lager: " + [nb ? nb + " Artikel nachbestellen" : "", nv ? nv + " × Verfall" : "", nf ? nf + " × Füllstand niedrig" : ""].filter(Boolean).join(", ");
+    const nb = r.bestellen.filter(x => neu.has(x.key)).length, nv = r.verfall.filter(x => neu.has(x.key)).length, nf = r.fuell.filter(x => neu.has(x.key)).length, na = r.bereiche.filter(x => neu.has(x.key)).length;
+    const betreff = TEST ? "San-Lager: Testmail" : "San-Lager: " + [nb ? nb + " Artikel nachbestellen" : "", nv ? nv + " × Verfall" : "", nf ? nf + " × Füllstand niedrig" : "", na ? na + " × Bereiche" : ""].filter(Boolean).join(", ");
     const body = { _subject: betreff, _template: "box", _captcha: "false" };
     if (r.an.length > 1) body._cc = r.an.slice(1).join(",");
     body["Nachbestellen"] = r.bestellen.length ? r.bestellen.map(mark).join("\n") : "nichts";
     if ((daten.cfg.mail || {}).exp !== false) body["Verfall"] = r.verfall.length ? r.verfall.map(mark).join("\n") : "nichts";
     if ((daten.cfg.mail || {}).fill !== false) body["Füllstand"] = r.fuell.length ? r.fuell.map(mark).join("\n") : "alles ok";
+    if ((daten.cfg.mail || {}).areas !== false) body["Weitere Bereiche"] = r.bereiche.length ? r.bereiche.map(mark).join("\n") : "alles ok";
     body["San-Lager öffnen"] = APP;
     const m = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(r.an[0]), {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", Referer: APP + "/", Origin: APP },
