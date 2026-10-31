@@ -108,6 +108,15 @@ textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);bo
 .pick.on .tick{background:var(--ok);border-color:var(--ok)}
 .pick.on{background:var(--ok-bg)}
 .catchip{padding:4px 6px}
+.li.tap{cursor:pointer}.li.tap:hover{background:var(--soft)}
+.qp{display:flex;align-items:center;gap:4px;flex:none}
+.qp button{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font-size:20px;cursor:pointer;flex:none}
+.qp .qty{min-width:48px;text-align:center;border-radius:6px;padding:4px 2px}
+.q-warn{background:var(--warn-bg);color:var(--warn)}.q-crit{background:var(--crit-bg);color:var(--crit)}.q-warn small,.q-crit small{color:inherit}
+#toast span{flex:1 1 auto;min-width:12em}
+.mrow{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--line);min-width:0}
+.mrow.on{background:var(--ok-bg)}
+.mrow .nm small{font-size:13px}
 .fillbox{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:12px}
 .fills{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .fillb{min-height:48px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-weight:600;font-size:15px;cursor:pointer;padding:4px 2px}
@@ -166,7 +175,8 @@ label.f input,label.f select,label.f textarea{text-transform:none;letter-spacing
 .stock{display:flex;gap:18px}
 .stock div{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
 .stock b{display:block;font-family:var(--f-num);font-size:22px;color:var(--ink);letter-spacing:0;text-transform:none}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:30;font-weight:600;max-width:90%}
+#toast .undo{margin-left:12px;background:none;border:1px solid currentColor;color:inherit;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer}
+#toast{display:flex;align-items:center;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:30;font-weight:600;max-width:90%}
 /* Etiketten */
 .labels{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .lab{background:#fff;color:#111;border:1px solid var(--line);border-radius:6px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
@@ -205,6 +215,7 @@ details[open] summary{margin-bottom:10px}
 .ed-line input{min-height:40px;font-size:16px}
 html.sheet-open,html.sheet-open body{overflow:hidden}
 #sheet .pan>*{flex-shrink:0}
+.sticky-act{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom,0px));background:var(--panel);display:flex;flex-direction:column;gap:8px;padding-block:10px calc(18px + env(safe-area-inset-bottom,0px));margin-bottom:calc(-18px - env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
 #print{display:none}
 @media print{body>*:not(#print){display:none!important}#print{display:block}#print .g{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}#print .l{border:1px dashed #999;padding:3mm;text-align:center;break-inside:avoid;display:flex;flex-direction:column;align-items:center;color:#000;font-family:Arial,sans-serif}#print img{width:32mm;height:32mm}#print b{font-size:10pt}#print span{font-size:9pt}#print small{font-size:7pt;color:#444}@page{size:A4;margin:10mm}}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -235,7 +246,7 @@ const DB_URL="https://lager-52f88-default-rtdb.europe-west1.firebasedatabase.app
 const DEFAULT_CFG={"items": {"a01": {"n": "Einmalhandschuhe", "d": "Gr. S", "u": "VE", "min": 4, "c": "H"}, "a02": {"n": "Einmalhandschuhe", "d": "Gr. M", "u": "VE", "min": 4, "c": "H"}, "a03": {"n": "Einmalhandschuhe", "d": "Gr. L", "u": "VE", "min": 4, "c": "H"}, "a04": {"n": "Einmalhandschuhe", "d": "Gr. XL", "u": "VE", "min": 4, "c": "H"}, "a05": {"n": "Händedesinfektionsmittel", "d": "", "u": "Fl.", "min": 1, "c": "H"}, "a06": {"n": "Desinfektionstücher", "d": "", "u": "VE", "min": 1, "c": "H"}, "a07": {"n": "i-gel Maske", "d": "Erw., Gr. ? (1)", "u": "Stk", "min": 1, "c": "A"}, "a08": {"n": "i-gel Maske", "d": "Erw., Gr. ? (2)", "u": "Stk", "min": 1, "c": "A"}, "a09": {"n": "i-gel Maske", "d": "Erw., Gr. ? (3)", "u": "Stk", "min": 1, "c": "A"}, "a10": {"n": "Optilube", "d": "", "u": "Stk", "min": 5, "c": "A"}, "a11": {"n": "Cuffdruckmesser", "d": "", "u": "Stk", "min": 1, "c": "A"}, "a12": {"n": "Thomasholder", "d": "", "u": "Stk", "min": 1, "c": "A"}, "a13": {"n": "Wärmedecke", "d": "", "u": "Stk", "min": 8, "c": "E"}, "a14": {"n": "i-gel Maske", "d": "Kind, Gr. ? (1)", "u": "Stk", "min": 1, "c": "A"}, "a16": {"n": "i-gel Maske", "d": "Kind, Gr. ? (2)", "u": "Stk", "min": 1, "c": "A"}, "a15": {"n": "Thomasholder", "d": "Kind", "u": "Stk", "min": 1, "c": "A"}, "a17": {"n": "Sauerstoffflasche", "d": "5 l", "u": "Stk", "min": 1, "c": "B"}, "a18": {"n": "Demand-Ventil", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a19": {"n": "Sauerstoffmaske", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a20": {"n": "Hyperventilationsmaske", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a21": {"n": "Beatmungsbeutel (Ambu)", "d": "Erw.", "u": "Stk", "min": 4, "c": "A"}, "a22": {"n": "Beatmungsbeutel (Ambu)", "d": "Kind", "u": "Stk", "min": 1, "c": "B"}, "a23": {"n": "Beatmungsbeutel (Ambu)", "d": "Säugling", "u": "Stk", "min": 1, "c": "B"}, "a24": {"n": "Filter", "d": "Beatmung", "u": "Stk", "min": 1, "c": "B"}, "a25": {"n": "Gänsegurgel", "d": "", "u": "Stk", "min": 1, "c": "B"}, "a26": {"n": "Traumaschere", "d": "", "u": "Stk", "min": 1, "c": "X"}, "a27": {"n": "Tourniquet", "d": "", "u": "Stk", "min": 2, "c": "X"}, "a28": {"n": "Israeli Bandage", "d": "", "u": "Stk", "min": 1, "c": "X"}, "a29": {"n": "Kompresse", "d": "10×10 cm", "u": "Stk", "min": 35, "c": "C"}, "a30": {"n": "Saugkompresse", "d": "15×25 cm", "u": "Stk", "min": 5, "c": "C"}, "a31": {"n": "Verbandpäckchen", "d": "groß", "u": "Stk", "min": 5, "c": "C"}, "a32": {"n": "Verbandpäckchen", "d": "mittel", "u": "Stk", "min": 5, "c": "C"}, "a33": {"n": "Verbandpäckchen", "d": "klein", "u": "Stk", "min": 5, "c": "C"}, "a34": {"n": "Mullbinde", "d": "groß", "u": "Stk", "min": 3, "c": "C"}, "a35": {"n": "Mullbinde", "d": "mittel", "u": "Stk", "min": 3, "c": "C"}, "a36": {"n": "Mullbinde", "d": "klein", "u": "Stk", "min": 3, "c": "C"}, "a37": {"n": "Heftpflaster", "d": "", "u": "VE", "min": 1, "c": "C"}, "a38": {"n": "Leukosilk", "d": "", "u": "Rolle", "min": 4, "c": "C"}, "a39": {"n": "SAM Splint", "d": "", "u": "Stk", "min": 3, "c": "C"}, "a40": {"n": "Sick Sac", "d": "", "u": "Stk", "min": 5, "c": "D"}, "a41": {"n": "Zellstofftuch", "d": "", "u": "VE", "min": 1, "c": "D"}, "a42": {"n": "Kältekompresse", "d": "", "u": "Stk", "min": 5, "c": "E"}, "a43": {"n": "Blutdruckmanschette", "d": "Erw.", "u": "Stk", "min": 4, "c": "G"}, "a44": {"n": "Blutdruckmanschette", "d": "Kind", "u": "Stk", "min": 1, "c": "G"}, "a45": {"n": "Oxi-Sensor", "d": "", "u": "Stk", "min": 3, "c": "G"}, "a46": {"n": "BZ-Messgerät", "d": "", "u": "Stk", "min": 3, "c": "G"}, "a47": {"n": "BZ-Messstäbchen", "d": "", "u": "VE", "min": 3, "c": "G"}, "a48": {"n": "Diagnostikleuchte", "d": "", "u": "Stk", "min": 3, "c": "G"}, "a49": {"n": "Infusionslösung", "d": "500 ml", "u": "Stk", "min": 1, "c": "C"}, "a50": {"n": "Infusionssystem", "d": "", "u": "Stk", "min": 1, "c": "C"}, "a51": {"n": "Viggo", "d": "22G", "u": "Stk", "min": 2, "c": "C"}, "a52": {"n": "Viggo", "d": "20G", "u": "Stk", "min": 2, "c": "C"}, "a53": {"n": "Viggo", "d": "18G", "u": "Stk", "min": 2, "c": "C"}, "a54": {"n": "Viggo", "d": "16G", "u": "Stk", "min": 2, "c": "C"}, "a55": {"n": "Viggo", "d": "14G", "u": "Stk", "min": 2, "c": "C"}, "a56": {"n": "Hautdesinfektion", "d": "", "u": "Fl.", "min": 1, "c": "C"}, "a57": {"n": "Stauband", "d": "", "u": "Stk", "min": 2, "c": "C"}, "a58": {"n": "Kanülenpflaster", "d": "", "u": "Stk", "min": 3, "c": "C"}, "a59": {"n": "Beatmungsmaske", "d": "Erw.", "u": "Stk", "min": 3, "c": "A"}, "a60": {"n": "Wendl-Tubus", "d": "Gr. ? (1)", "u": "Stk", "min": 3, "c": "A"}, "a61": {"n": "Wendl-Tubus", "d": "Gr. ? (2)", "u": "Stk", "min": 3, "c": "A"}, "a62": {"n": "Wendl-Tubus", "d": "Gr. ? (3)", "u": "Stk", "min": 3, "c": "A"}, "a63": {"n": "Reservoir", "d": "", "u": "Stk", "min": 2, "c": "A"}, "a64": {"n": "Pflaster", "d": "", "u": "VE", "min": 2, "c": "C"}, "a65": {"n": "Mullbinde", "d": "10 cm", "u": "Stk", "min": 6, "c": "C"}, "a66": {"n": "Mullbinde", "d": "6 cm", "u": "Stk", "min": 6, "c": "C"}, "a67": {"n": "Verbandpäckchen", "d": "10 cm", "u": "Stk", "min": 6, "c": "C"}, "a68": {"n": "Verbandpäckchen", "d": "6 cm", "u": "Stk", "min": 6, "c": "C"}}, "types": {"t1": {"n": "A/B", "col": "blau", "sec": [{"n": "Hygiene", "c": "H", "l": [{"i": "a01", "s": 1}, {"i": "a02", "s": 1}, {"i": "a03", "s": 1}, {"i": "a04", "s": 1}, {"i": "a05", "s": 1}, {"i": "a06", "s": 1}]}, {"n": "Intubation", "c": "A", "l": [{"i": "a07", "s": 1}, {"i": "a08", "s": 1}, {"i": "a09", "s": 1}, {"i": "a10", "s": 5}, {"i": "a11", "s": 1}, {"i": "a12", "s": 1}, {"i": "a13", "s": 1}]}, {"n": "Intubation Kind", "c": "A", "l": [{"i": "a14", "s": 1}, {"i": "a16", "s": 1}, {"i": "a15", "s": 1}]}, {"n": "Sauerstoff", "c": "B", "l": [{"i": "a17", "s": 1}, {"i": "a18", "s": 1}, {"i": "a19", "s": 1}, {"i": "a20", "s": 1}]}, {"n": "Beatmung", "c": "B", "l": [{"i": "a21", "s": 1}, {"i": "a22", "s": 1}, {"i": "a23", "s": 1}, {"i": "a24", "s": 1}, {"i": "a25", "s": 1}]}]}, "t2": {"n": "X/C/D/E", "col": "rot", "sec": [{"n": "Hygiene", "c": "H", "l": [{"i": "a01", "s": 1}, {"i": "a02", "s": 1}, {"i": "a03", "s": 1}, {"i": "a04", "s": 1}]}, {"n": "Extreme Bleeding", "c": "X", "l": [{"i": "a26", "s": 1}, {"i": "a27", "s": 2}, {"i": "a28", "s": 1}]}, {"n": "Circulation", "c": "C", "l": [{"i": "a29", "s": 10}, {"i": "a30", "s": 5}, {"i": "a31", "s": 5}, {"i": "a32", "s": 5}, {"i": "a33", "s": 5}, {"i": "a34", "s": 3}, {"i": "a35", "s": 3}, {"i": "a36", "s": 3}, {"i": "a37", "s": 1}, {"i": "a38", "s": 1}, {"i": "a39", "s": 1}, {"i": "a13", "s": 1}]}, {"n": "Zugang", "c": "C", "l": [{"i": "a49", "s": 1}, {"i": "a50", "s": 1}, {"i": "a51", "s": 2}, {"i": "a52", "s": 2}, {"i": "a53", "s": 2}, {"i": "a54", "s": 2}, {"i": "a55", "s": 2}, {"i": "a56", "s": 1}, {"i": "a29", "s": 5}, {"i": "a57", "s": 2}, {"i": "a58", "s": 3}, {"i": "a38", "s": 1}]}, {"n": "Disability", "c": "D", "l": [{"i": "a40", "s": 5}, {"i": "a41", "s": 1}]}, {"n": "Environment", "c": "E", "l": [{"i": "a13", "s": 5}, {"i": "a42", "s": 5}]}, {"n": "Diagnostik", "c": "G", "l": [{"i": "a43", "s": 2}, {"i": "a44", "s": 1}, {"i": "a45", "s": 1}, {"i": "a46", "s": 1}, {"i": "a47", "s": 1}, {"i": "a48", "s": 1}]}, {"n": "Zusätzliches", "c": "Z", "l": [{"i": "a21", "s": 1}, {"i": "a59", "s": 1}, {"i": "a60", "s": 1}, {"i": "a61", "s": 1}, {"i": "a62", "s": 1}, {"i": "a13", "s": 1}]}]}, "t3": {"n": "Ranger/Transit", "col": "rot", "sec": [{"n": "Hygiene", "c": "H", "l": [{"i": "a01", "s": 1}, {"i": "a02", "s": 1}, {"i": "a03", "s": 1}, {"i": "a04", "s": 1}]}, {"n": "Diagnostik", "c": "G", "l": [{"i": "a43", "s": 1}, {"i": "a45", "s": 1}, {"i": "a46", "s": 1}, {"i": "a47", "s": 1}, {"i": "a48", "s": 1}]}, {"n": "Beatmung, Airway", "c": "A", "l": [{"i": "a21", "s": 1}, {"i": "a59", "s": 1}, {"i": "a60", "s": 1}, {"i": "a61", "s": 1}, {"i": "a62", "s": 1}, {"i": "a63", "s": 1}]}, {"n": "Verband", "c": "C", "l": [{"i": "a64", "s": 1}, {"i": "a65", "s": 3}, {"i": "a66", "s": 3}, {"i": "a29", "s": 10}, {"i": "a67", "s": 3}, {"i": "a68", "s": 3}, {"i": "a38", "s": 1}, {"i": "a39", "s": 1}]}]}}, "bags": {"b1": {"n": "Rucksack A/B", "t": "t1"}, "b2": {"n": "Rucksack X/C/D/E", "t": "t2"}, "b3": {"n": "Rucksack Ranger", "t": "t3"}, "b4": {"n": "Rucksack Transit", "t": "t3"}}, "v": 1};
 let FILL={},EXP={},admQ="",MIRROR={},CFG=null,BOOK=[],BASE=null,STATS={},canWrite=true,unlocked=false,loaded={cfg:false,book:false};
 const ADMIN_CODE="112";
-const APP_VERSION="1.4";const APP_DATE="30.10.2026";
+const APP_VERSION="1.5";const APP_DATE="31.10.2026";
 /* Neue Version automatisch laden (GitHub hält Seiten bis zu 10 Min. im Zwischenspeicher) */
 async function checkUpdate(){try{const r=await fetch(location.pathname,{cache:"reload"});const t=await r.text();const m=t.match(/APP_VERSION="([^"]+)"/);
   if(m&&m[1]!==APP_VERSION&&!sheet&&!inv&&!cfgDirty&&!busy()){saveView();location.reload()}}catch(e){}}
@@ -246,6 +257,7 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const $=s=>document.querySelector(s);
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 function toast(t){const e=$("#toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2600)}
+function toastUndo(t,id){const e=$("#toast");e.innerHTML=`<span>${esc(t)}</span>${typeof id==="string"?`<button class="undo" data-act="undo" data-id="${esc(id)}">Rückgängig</button>`:""}`;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,6000)}
 
 /* ---------- Berechnung ---------- */
 function stock(){
@@ -343,8 +355,9 @@ function orderText(ro){const d=new Date().toLocaleDateString("de-DE");let t=`Bes
 function histList(list,del){
   if(!list.length)return'<div class="empty">Noch keine Buchungen. Scannt einen QR-Code am Fach oder tippt im Rucksack auf einen Artikel.</div>';
   return`<div class="list">${list.map(b=>{const d=new Date(b.ts);const ln=b.lines||[];const main=ln.find(x=>x.l!=="lager")||ln[0]||{};
-    const txt=b.kind==="inventur"?`${ln.length} Positionen · ${esc(locName(main.l))}`:`${Math.abs(main.d||0)}× ${esc(iname(main.i))}${new Set(ln.map(x=>x.i)).size>1?" + "+(new Set(ln.map(x=>x.i)).size-1)+" weitere":""} · ${esc(locName(main.l))}`;
-    return`<div class="li"><span class="nm"><b>${KIND[b.kind]||b.kind}</b> <i>${txt}</i><small>${d.toLocaleDateString("de-DE")} ${d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}${b.who?" · "+esc(b.who):""}${b.note?" · "+esc(b.note):""}</small></span>${del?`<button class="btn dng small" data-act="storno" data-id="${b.id}">Storno</button>`:""}</div>`}).join("")}</div>`;
+    const loc=b.bag?locName(b.bag):locName(main.l),nI=new Set(ln.map(x=>x.i)).size,first=ln.filter(x=>x.i===main.i).reduce((s,x)=>s+(b.nf?-x.d:Math.abs(x.d)),0)||Math.abs(main.d||0);
+    const txt=b.kind==="inventur"?`${ln.length} Positionen · ${esc(locName(main.l))}`:b.kind==="eingang"&&nI>1?`${nI} Artikel · Lieferung`:`${b.nf?first:Math.abs(main.d||0)}× ${esc(iname(main.i))}${nI>1?" + "+(nI-1)+" weitere":""} · ${esc(loc)}`;
+    return`<div class="li"><span class="nm"><b>${b.nf?"Verbraucht & nachgefüllt":KIND[b.kind]||b.kind}</b> <i>${txt}</i><small>${d.toLocaleDateString("de-DE")} ${d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}${b.who?" · "+esc(b.who):""}${b.note?" · "+esc(b.note):""}</small></span>${del?`<button class="btn dng small" data-act="storno" data-id="${b.id}">Storno</button>`:""}</div>`}).join("")}</div>`;
 }
 function catHead(c){return`<div class="cat"><span class="cl cl-${c}">${CLET[c]}</span><span class="t">${CATS[c]}</span></div>`}
 function vBags(S){
@@ -354,14 +367,14 @@ function vBags(S){
   let h=`<div class="chips">${bags.map(b=>`<button class="chip" data-act="selbag" data-b="${b}" aria-pressed="${b===bagSel}"><span class="dot d-${locCol(b)}"></span>${esc(CFG.bags[b].n)}</button>`).join("")}</div>`;
   h+=`<section class="sec"><div class="row"><h2 class="sp">${esc(CFG.bags[bagSel].n)}</h2></div>
    <div class="row"><span class="muted small">${st.ist}/${st.soll} Teile · ${st.miss} Artikel unter Soll</span><span class="sp"></span>
-   ${inv&&inv.l===bagSel?`<button class="btn" data-act="invcancel">Abbrechen</button><button class="btn pri" data-act="invsave">Zählung speichern</button>`:`<button class="btn" data-act="invstart" data-l="${bagSel}">Inventur</button><button class="btn pri" data-act="fillall" ${st.miss?"":"disabled"}>Alles aus Lager auffüllen</button>`}</div>`;
-  if(inv&&inv.l===bagSel)h+=`<p class="note" style="margin:0">Inventur: tatsächlich vorhandene Menge eintragen. Beim Speichern wird die Differenz gebucht.</p>`;
+   ${inv&&inv.l===bagSel?`<button class="btn" data-act="invcancel">Abbrechen</button><button class="btn pri" data-act="invsave">Zählung speichern</button>`:`<button class="btn pri" data-act="multi" data-l="${bagSel}">Mehrere buchen</button><button class="btn" data-act="invstart" data-l="${bagSel}">Inventur</button><button class="btn" data-act="fillall" ${st.miss?"":"disabled"}>Alles aus Lager auffüllen</button>`}</div>`;
+  if(inv&&inv.l===bagSel)h+=`<p class="note" style="margin:0">Inventur: Am schnellsten erst „Alles = Soll“ tippen und dann nur Abweichungen ändern. Beim Speichern wird die Differenz gebucht.</p><div class="row"><button class="btn" data-act="invsoll">Alles = Soll</button><span class="muted small sp">setzt alle Felder auf die Sollmenge</span></div>`;
   let lastC=null;h+=`<div class="list">`;
   for(const x of lines){const it=CFG.items[x.i],v=(S[bagSel]||{})[x.i]||0;
     if(x.c!==lastC){h+=catHead(x.c);lastC=x.c}
     const sub=x.parts.length>1?"verteilt: "+x.parts.join(" · "):x.sec;
     if(inv&&inv.l===bagSel)h+=`<div class="li"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>Soll ${x.soll} ${esc(uLab(it))} · ${esc(sub)}</small></span><input type="number" min="0" id="inv-${x.i}" data-inv="${x.i}" value="${inv.v[x.i]??v}"></div>`;
-    else h+=`<button class="li" data-act="sheet" data-l="${bagSel}" data-i="${x.i}"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>${esc(sub)}</small></span>${fillBadge(bagSel,x.i)}${expBadge(bagSel,x.i)}${statusPill(v,x.soll)}<span class="qty">${v}<small>/${x.soll}</small></span></button>`;
+    else h+=`<div class="li tap" role="button" tabindex="0" data-act="sheet" data-l="${bagSel}" data-i="${x.i}"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>${esc(sub)}</small></span>${fillBadge(bagSel,x.i)}${expBadge(bagSel,x.i)}<span class="qp"><button data-act="qb" data-l="${bagSel}" data-i="${x.i}" data-d="-1" aria-label="1 verbraucht">−</button><span class="qty ${v>=x.soll?"q-ok":v<=0?"q-crit":"q-warn"}">${v}<small>/${x.soll}</small></span><button data-act="qb" data-l="${bagSel}" data-i="${x.i}" data-d="1" aria-label="1 aus Lager nachgefüllt">+</button></span></div>`;
   }
   return h+`</div></section>`;
 }
@@ -374,7 +387,7 @@ function vLager(S){
   for(const i of itemsSorted()){const it=CFG.items[i],v=S.lager[i]||0,mn=it.min||0;
     if(it.c!==lastC){h+=catHead(it.c);lastC=it.c}
     if(inv&&inv.l==="lager")h+=`<div class="li"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>Meldebestand ${mn} ${esc(uLab(it))}</small></span><input type="number" min="0" id="inv-${i}" data-inv="${i}" value="${inv.v[i]??v}"></div>`;
-    else h+=`<button class="li" data-act="sheet" data-l="lager" data-i="${i}"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>Meldebestand ${mn}${it.ziel?` · Ziel ${it.ziel}`:""}</small></span>${expBadge("lager",i)}${v<=0?'<span class="pill p-crit">leer</span>':due.has(i)?'<span class="pill p-warn">bestellen</span>':'<span class="pill p-ok">ok</span>'}<span class="qty">${v} <small>${esc(uLab(it))}</small></span></button>`;
+    else h+=`<div class="li tap" role="button" tabindex="0" data-act="sheet" data-l="lager" data-i="${i}"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>Meldebestand ${mn}${it.ziel?` · Ziel ${it.ziel}`:""} · ${esc(uLab(it))}</small></span>${expBadge("lager",i)}${v<=0?'<span class="pill p-crit">leer</span>':due.has(i)?'<span class="pill p-warn">bestellen</span>':'<span class="pill p-ok">ok</span>'}<span class="qp"><button data-act="qb" data-l="lager" data-i="${i}" data-d="-1" aria-label="1 entnommen">−</button><span class="qty">${v}</span><button data-act="qb" data-l="lager" data-i="${i}" data-d="1" aria-label="1 Wareneingang">+</button></span></div>`;
   }
   return h+`</div></section>`;
 }
@@ -421,7 +434,7 @@ function vAdmin(){
   else if(adm==="labels"){
   // Etiketten
   h+=`<div class="sec" id="labdet" data-open="1">
-   <label class="f">Etiketten für<select id="labsel" data-act="labsel"><option value="lager" ${labLoc==="lager"?"selected":""}>Lager (Fächer)</option>${Object.keys(CFG.bags).map(b=>`<option value="${b}" ${labLoc===b?"selected":""}>${esc(CFG.bags[b].n)}</option>`).join("")}</select></label>
+   <label class="f">Etiketten für<select id="labsel" data-act="labsel"><option value="__bags" ${labLoc==="__bags"?"selected":""}>Rucksäcke – 1 QR je Rucksack (empfohlen)</option><option value="lager" ${labLoc==="lager"?"selected":""}>Lager (Fächer)</option>${Object.keys(CFG.bags).map(b=>`<option value="${b}" ${labLoc===b?"selected":""}>${esc(CFG.bags[b].n)}</option>`).join("")}</select></label>
    <div class="row"><span class="muted small sp">A4, 4 Etiketten pro Reihe. Am besten am PC drucken.</span><button class="btn pri" data-act="labdl">Etiketten drucken</button></div>
    <div class="labels" id="labels"></div></div>`;
   }
@@ -438,8 +451,9 @@ function vAdmin(){
   return h;
 }
 function qrUrl(l,i){return location.origin+location.pathname+(location.search||"")+"#q-"+l+"-"+i}
-function labelItems(){return labLoc==="lager"?itemsSorted():bagLines(labLoc).map(x=>x.i)}
+function labelItems(){return labLoc==="__bags"?[]:labLoc==="lager"?itemsSorted():bagLines(labLoc).map(x=>x.i)}
 function drawLabels(){
+  if(labLoc==="__bags"){const el=$("#labels");if(!el)return;el.innerHTML="";LABCACHE=null;for(const b of Object.keys(CFG.bags)){const d=document.createElement("div");d.className="lab";const q=document.createElement("div");d.appendChild(q);d.insertAdjacentHTML("beforeend",`<b>${esc(CFG.bags[b].n)}</b><small style="user-select:all;word-break:break-all">${esc(location.origin+location.pathname+"#r-"+b)}</small>`);el.appendChild(d);if(window.QRCode)new QRCode(q,{text:location.origin+location.pathname+"#r-"+b,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}return}
   const el=$("#labels");if(!el)return;
   const key=labLoc+"|"+labelItems().map(i=>itemLabel(i)).join(",");
   if(LABCACHE&&LABCACHE.key===key){el.replaceWith(LABCACHE.node);return}
@@ -467,7 +481,8 @@ function drawSheet0(){
    <div class="chips">${locs.map(x=>`<button class="chip" data-act="sloc" data-l="${x}" aria-pressed="${x===l}"><span class="dot d-${locCol(x)}"></span>${esc(locName(x))}</button>`).join("")}</div>
    <div class="stock">${isBag?`<div>Im Rucksack<b>${ist}<small class="muted">/${soll}</small></b></div>`:""}<div>Im Lager<b>${lg}</b></div><div>Einheit<b style="font-family:var(--f-body)">${esc(uLab(it))}</b></div></div>
    <div class="step"><button data-act="qm" aria-label="weniger">−</button><input type="number" min="1" id="sq" value="${sheet.q}" aria-label="Menge"><button data-act="qp" aria-label="mehr">+</button>${isBag&&soll>ist?`<button class="chip" data-act="qfill">bis Soll (${soll-ist})</button>`:""}</div>
-   <div class="row"><button class="btn pri big" data-act="book" data-k="verbrauch">Verbraucht</button>${isBag?`<button class="btn big" data-act="book" data-k="auffuellen">Aus Lager nachgefüllt</button>`:`<button class="btn big" data-act="book" data-k="eingang">Wareneingang</button>`}</div>
+   ${isBag?`<button class="btn pri big" data-act="book" data-k="vnach">Verbraucht &amp; direkt nachgefüllt</button><span class="muted small" style="margin-top:-8px">Aus dem Lager ersetzt – der Rucksack bleibt voll.</span>
+   <div class="row"><button class="btn big" data-act="book" data-k="verbrauch">Nur verbraucht</button><button class="btn big" data-act="book" data-k="auffuellen">Aus Lager nachgefüllt</button></div>`:`<div class="row"><button class="btn pri big" data-act="book" data-k="verbrauch">Verbraucht</button><button class="btn big" data-act="book" data-k="eingang">Wareneingang</button></div>`}
    <label class="f">Bemerkung (optional)<textarea id="snote" rows="2" placeholder="z. B. Sanitätsdienst Stadtfest, Packung beschädigt …">${esc(sheet.note||"")}</textarea></label>
    <span class="muted small" style="margin-top:-8px">Bitte keine Namen oder Daten von Patienten eintragen.</span>
    <div class="row"><input class="sp" style="flex:1 1 180px" id="swho" placeholder="Name / Kürzel (optional)" value="${esc(ls("who")||"")}"><button class="btn small" data-act="book" data-k="aussort">Abgelaufen / defekt</button></div>
@@ -478,18 +493,22 @@ function drawSheet0(){
   el.hidden=false;
 }
 async function saveExp(l,i,v){try{await fb("/exp/"+l+"/"+i,v?"PUT":"DELETE",v||undefined);return true}catch(e){toast("Datum konnte nicht gespeichert werden");return false}}
+/* Verbrauch aus Rucksack, Ersatz aus Lager: Lager sinkt, Rucksack bleibt; reicht das Lager nicht, sinkt der Rest im Rucksack */
+function nachLines(i,l,q,lg){const a=Math.max(0,Math.min(q,lg)),r=[];if(a)r.push({i,l:"lager",d:-a});if(q-a)r.push({i,l,d:-(q-a)});return r}
 async function book(kind){
   const q=Math.max(1,parseInt($("#sq").value)||1),l=sheet.l,i=sheet.i,who=($("#swho").value||"").trim(),note=($("#snote").value||"").trim().slice(0,300),ex=$("#sexp").value;ls("who",who);
   let lines;
-  if(kind==="verbrauch"||kind==="aussort")lines=[{i,l,d:-q}];
+  let extra={};
+  if(kind==="vnach"){lines=nachLines(i,l,q,stock().lager[i]||0);kind="verbrauch";extra={nf:1,bag:l}}
+  else if(kind==="verbrauch"||kind==="aussort")lines=[{i,l,d:-q}];
   else if(kind==="eingang")lines=[{i,l:"lager",d:q}];
   else{const lg=stock().lager[i]||0;if(lg<q){toast(lg>0?`Im Lager sind nur ${lg} vorhanden`:"Im Lager ist nichts gebucht – erst Inventur oder Wareneingang im Lager buchen");return}lines=[{i,l:"lager",d:-q},{i,l,d:q}]}
-  if(await write({kind,lines,who,note})){if(ex!==expOf(l,i))await saveExp(l,i,ex);if(kind==="auffuellen"&&hasFill(i))await saveFill(l,i,"voll");toast(`${KIND[kind]}: ${q}× ${iname(i)}`);sheet=null;drawSheet()}
+  const id=await write({kind,lines,who,note,...extra});if(id){if(ex!==expOf(l,i))await saveExp(l,i,ex);if((kind==="auffuellen"||extra.nf)&&hasFill(i))await saveFill(l,i,"voll");const short=extra.nf&&lines.some(x=>x.l!=="lager");toastUndo(`${extra.nf?"Verbraucht & nachgefüllt":KIND[kind]}: ${q}× ${iname(i)}${short?" (Lager reichte nicht ganz)":""}`,id);sheet=null;drawSheet()}
 }
 const ROOT=(new URLSearchParams(location.search).get("db")||DB_URL).replace(/\/+$/,"")+"/sanlager";
 async function fb(path,method,body){const r=await fetch(ROOT+path+".json",{method,headers:{"Content-Type":"application/json"},body:body===undefined?undefined:JSON.stringify(body)});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function write(b){
-  try{await fb("/bookings","POST",{ts:Date.now(),...b});return true}
+  try{const r=await fb("/bookings","POST",{ts:Date.now(),...b});return (r&&r.name)||true}
   catch(e){toast(navigator.onLine?"Buchung fehlgeschlagen, bitte erneut versuchen":"Kein Netz – Buchung nicht gespeichert");return false}
 }
 let saveSeq=0;
@@ -532,10 +551,26 @@ function editSheet(){
   if(sh.kind==="plist")return plistSheet();
   if(sh.kind==="apick")return pickSheet();
   if(sh.kind==="anew")return newAreaSheet();
+  if(sh.kind==="multi"){const S=stock(),L=bagLines(sh.l),c=t.c,n=Object.values(c).reduce((a,b)=>a+b,0);let lastC=null,h="";
+    for(const x of L){const it=CFG.items[x.i],v=(S[sh.l]||{})[x.i]||0,k=c[x.i]||0;if(x.c!==lastC){h+=catHead(x.c);lastC=x.c}
+      h+=`<div class="mrow${k?" on":""}"><span class="nm"><b>${esc(it.n)}</b><i>${esc(it.d)}</i><small>im Rucksack ${v}/${x.soll} · Lager ${S.lager[x.i]||0}</small></span><span class="qp"><button data-act="mstep" data-i="${x.i}" data-d="-1" aria-label="weniger" ${k?"":"disabled"}>−</button><span class="qty"><b>${k||""}</b></span><button data-act="mstep" data-i="${x.i}" data-d="1" aria-label="mehr">+</button></span></div>`}
+    return`<div class="row"><span class="muted small sp">${esc(locName(sh.l))}</span><button class="btn" data-act="close">Abbrechen</button></div><div class="sh-t">Was wurde verbraucht?</div>
+    <span class="muted small" style="margin-top:-8px">Bei jedem Artikel mit + die Menge antippen, dann unten einmal speichern.</span>
+    <div class="list">${h}</div>
+    <label class="f">Bemerkung (optional)<textarea data-sf="note" rows="2" placeholder="z. B. Sanitätsdienst Stadtfest">${esc(t.note||"")}</textarea></label>
+    <span class="muted small" style="margin-top:-8px">Bitte keine Namen oder Daten von Patienten eintragen.</span>
+    <input id="swho" placeholder="Name / Kürzel (optional)" value="${esc(ls("who")||"")}">
+    <div class="sticky-act"><button class="btn pri big" data-act="mbook" data-k="vnach" ${n?"":"disabled"}>Verbraucht &amp; nachgefüllt (${n})</button><button class="btn big" data-act="mbook" data-k="verbrauch" ${n?"":"disabled"}>Nur verbraucht</button></div>`}
+  if(sh.kind==="delivery"){const ro=reorder(stock());let lastC=null,h="";
+    for(const r of ro){const it=CFG.items[r.i];if(it.c!==lastC){h+=catHead(it.c);lastC=it.c}
+      h+=`<div class="pline"><div class="row"><b class="sp">${esc(it.n)} <span class="muted" style="font-weight:400">${esc(it.d)}</span></b><span class="muted small">bestellt ${r.need} ${esc(uLab(it))}</span></div><div class="fgrid"><label class="f">Geliefert<input type="number" inputmode="numeric" min="0" data-sf="q_${r.i}" value="${esc(t["q_"+r.i]??r.need)}"></label><label class="f">Verfall (optional)<input type="month" data-sf="e_${r.i}" value="${esc(t["e_"+r.i]||"")}"></label></div></div>`}
+    return`<div class="row"><b class="sp sht">Bestellung ist da</b><button class="btn" data-act="close">Abbrechen</button></div>
+    <span class="muted small">Mengen sind mit der Bestellung vorausgefüllt. Nur ändern, was abweicht (0 = nicht geliefert).</span>
+    ${ro.length?`<div class="list">${h}</div><input id="swho" placeholder="Name / Kürzel (optional)" value="${esc(ls("who")||"")}"><div class="sticky-act"><button class="btn pri big" data-act="delbook">Wareneingang buchen</button></div>`:`<div class="empty">Nichts zu bestellen.</div>`}`}
   if(sh.kind==="order"){const ro=reorder(stock());let lastC=null,h="";
     for(const r of ro){const c=CFG.items[r.i].c;if(c!==lastC){h+=catHead(c);lastC=c}h+=roRow(r,true)}
     return`<div class="row"><b class="sp sht">Bestellliste (${ro.length})</b><button class="btn" data-act="close">Schließen</button></div>
-    ${ro.length?`<div class="row"><button class="btn pri" data-act="ordercopy">Liste kopieren</button><span class="muted small sp">zum Einfügen in Mail oder WhatsApp</span></div><textarea id="ordertxt" readonly rows="3" style="display:none">${esc(orderText(ro))}</textarea><div class="list">${h}</div>`:`<div class="empty">Alles ausreichend vorrätig.</div>`}`}
+    ${ro.length?`<div class="row"><button class="btn" data-act="ordercopy">Liste kopieren</button><button class="btn pri" data-act="delivery">Bestellung ist da</button></div><textarea id="ordertxt" readonly rows="3" style="display:none">${esc(orderText(ro))}</textarea><div class="list">${h}</div>`:`<div class="empty">Alles ausreichend vorrätig.</div>`}`}
   if(sh.kind==="today"){const td=new Date().toDateString(),l=BOOK.filter(b=>new Date(b.ts).toDateString()===td);
     return`<div class="row"><b class="sp sht">Buchungen heute (${l.length})</b><button class="btn" data-act="close">Schließen</button></div>${histList(l,false)}`}
   if(sh.kind==="item"){const isNew=!sh.i;
@@ -630,6 +665,24 @@ document.addEventListener("click",async e=>{
   else if(a==="adm"){adm=t.dataset.v;render();scrollTo(0,0)}
   else if(a==="labdl")saveLabels();
   else if(a==="es")openEdit(t.dataset.k,t.dataset);
+  else if(a==="undo"){t.disabled=true;try{await fb("/bookings/"+t.dataset.id,"DELETE");toast("Rückgängig gemacht")}catch(err){toast("Rückgängig nicht möglich")}}
+  else if(a==="qb"){e.stopPropagation();const l=t.dataset.l,i=t.dataset.i,d=+t.dataset.d,S=stock(),who=ls("who")||"";let b;
+    if(l==="lager")b=d<0?{kind:"verbrauch",lines:[{i,l:"lager",d:-1}]}:{kind:"eingang",lines:[{i,l:"lager",d:1}]};
+    else if(d<0)b={kind:"verbrauch",lines:[{i,l,d:-1}]};
+    else{if((S.lager[i]||0)<1){toast("Im Lager ist nichts davon gebucht");return}b={kind:"auffuellen",lines:[{i,l:"lager",d:-1},{i,l,d:1}]}}
+    t.disabled=true;const id=await write({...b,who});t.disabled=false;if(id){if(b.kind==="auffuellen"&&hasFill(i))await saveFill(l,i,"voll");toastUndo(`${KIND[b.kind]}: 1× ${iname(i)}`,id)}}
+  else if(a==="multi")openMulti(t.dataset.l);
+  else if(a==="mstep"){keepSheet();const c=sheet.tmp.c,i=t.dataset.i;c[i]=Math.max(0,(c[i]||0)+ +t.dataset.d);if(!c[i])delete c[i];drawSheet()}
+  else if(a==="mbook"){keepSheet();const l=sheet.l,c=sheet.tmp.c,S=stock(),who=whoNow(),note=(sheet.tmp.note||"").trim().slice(0,300),nf=t.dataset.k==="vnach";let lines=[],short=false;
+    for(const i in c){if(nf){const x=nachLines(i,l,c[i],S.lager[i]||0);if(x.some(y=>y.l!=="lager"))short=true;lines.push(...x)}else lines.push({i,l,d:-c[i]})}
+    if(!lines.length)return;t.disabled=true;const id=await write({kind:"verbrauch",lines,who,note,...(nf?{nf:1,bag:l}:{})});
+    if(id){if(nf)for(const i in c)if(hasFill(i))await saveFill(l,i,"voll");const n=Object.values(c).reduce((a,b)=>a+b,0);toastUndo(`${nf?"Verbraucht & nachgefüllt":"Verbraucht"}: ${n} Teile${short?" (Lager reichte nicht ganz)":""}`,id);sheet=null;drawSheet()}else t.disabled=false}
+  else if(a==="delivery"){$("#sheet").innerHTML="";sheet={kind:"delivery",tmp:{}};drawSheet()}
+  else if(a==="delbook"){keepSheet();const ro=reorder(stock()),m=sheet.tmp,who=whoNow(),lines=[],ex={};
+    for(const r of ro){const q=parseInt(m["q_"+r.i]??r.need)||0;if(q>0){lines.push({i:r.i,l:"lager",d:q});const e=m["e_"+r.i];if(e){const old=expOf("lager",r.i);ex[r.i]=old&&old<e?old:e}}}
+    if(!lines.length){toast("Keine Mengen eingetragen");return}t.disabled=true;const id=await write({kind:"eingang",lines,who});
+    if(id){if(Object.keys(ex).length)try{await fb("/exp/lager","PATCH",ex)}catch(err){toast("Verfallsdaten nicht gespeichert")}toastUndo(`Wareneingang: ${lines.length} Artikel gebucht`,id);sheet=null;drawSheet()}else t.disabled=false}
+  else if(a==="invsoll"){for(const x of bagLines(inv.l)){inv.v[x.i]=x.soll;const f=$("#inv-"+x.i);if(f)f.value=x.soll}saveView();toast("Alle Felder auf Soll gesetzt – jetzt Abweichungen ändern")}
   else if(a==="orderlist"){$("#sheet").innerHTML="";sheet={kind:"order",tmp:{}};drawSheet()}
   else if(a==="todaylist"){$("#sheet").innerHTML="";sheet={kind:"today",tmp:{}};drawSheet()}
   else if(a==="kpibags"){tab="bags";render();scrollTo(0,0)}
@@ -689,7 +742,7 @@ document.addEventListener("change",async e=>{
 });
 document.addEventListener("input",e=>{if(e.target.id==="admq"){admQ=e.target.value;filterAdm()}
   if(e.target.id==="pickq"&&sheet&&sheet.kind==="add"){clearTimeout(window._pq);window._pq=setTimeout(()=>{keepSheet();drawSheet();const f=$("#pickq");if(f){f.focus();f.setSelectionRange(f.value.length,f.value.length)}},250)}});
-document.addEventListener("keydown",e=>{const t=e.target;if(e.key==="Enter"&&t.id&&t.id.startsWith("la-")){e.preventDefault();document.querySelector(`[data-act=ladd][data-k="${t.id.slice(3)}"]`).click()}});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("tap")){e.preventDefault();e.target.click();return}const t=e.target;if(e.key==="Enter"&&t.id&&t.id.startsWith("la-")){e.preventDefault();document.querySelector(`[data-act=ladd][data-k="${t.id.slice(3)}"]`).click()}});
 document.addEventListener("toggle",e=>{const d=e.target;if(!d.id)return;if(d.open)OPEN.add(d.id);else OPEN.delete(d.id);if(d.id==="labdet"){ls("labopen",d.open?"1":"");drawLabels()}},true);
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet"){sheet=null;drawSheet()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sheet){sheet=null;drawSheet()}});
@@ -697,6 +750,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sheet){sheet=null;d
 /* ---------- Etiketten-Datei ---------- */
 function saveLabels(){
   if(!window.QRCode){toast("QR-Bibliothek nicht geladen");return}
+  if(labLoc==="__bags"){const cells=[];for(const b of Object.keys(CFG.bags)){const tmp=document.createElement("div");new QRCode(tmp,{text:location.origin+location.pathname+"#r-"+b,width:300,height:300,correctLevel:QRCode.CorrectLevel.M});cells.push(`<div class="l"><img src="${tmp.querySelector("canvas").toDataURL()}" alt=""><b>${esc(CFG.bags[b].n)}</b><small>Scannen: Verbrauch eintragen</small></div>`)}
+    $("#print").innerHTML=`<div class="g">${cells.join("")}</div>`;setTimeout(()=>window.print(),150);return}
   const cells=[];for(const i of labelItems()){const it=CFG.items[i],tmp=document.createElement("div");new QRCode(tmp,{text:qrUrl(labLoc,i),width:300,height:300,correctLevel:QRCode.CorrectLevel.M});const c=tmp.querySelector("canvas");
     cells.push(`<div class="l"><img src="${c.toDataURL()}" alt=""><b>${esc(it.n)}</b><span>${esc(it.d)}</span><small>${esc(locName(labLoc))} · ${CLET[it.c]} ${CATS[it.c]}</small></div>`)}
   $("#print").innerHTML=`<div class="g">${cells.join("")}</div>`;setTimeout(()=>window.print(),150);
@@ -799,6 +854,7 @@ function newAreaSheet(){
   <div class="chips"><button class="chip" data-act="artyp" data-v="pack" aria-pressed="true">Packliste / Checkliste</button><button class="chip" data-act="artyp" data-v="fuel" aria-pressed="false">Tankstand</button></div>
   <p class="muted small" style="margin:0"><b>Packliste:</b> Einträge (z. B. Taschen, Boote) mit Teilen, die auf ok / fehlt / kaputt / trocknet gesetzt werden.<br><b>Tankstand:</b> Einträge (z. B. Fahrzeuge, Stromerzeuger) mit Tankstand und „Getankt“.</p>
   <div class="row"><button class="btn pri big" data-act="aradd">Bereich anlegen</button></div>`}
+function openMulti(l){if(!CFG.bags[l])return;$("#sheet").innerHTML="";sheet={kind:"multi",l,tmp:{c:{},note:""}};drawSheet()}
 function openArea(aid,oid){const A=areas()[aid];if(!A||!(A.o||{})[oid])return;area=aid;tab="ahome";$("#sheet").innerHTML="";sheet={kind:A.typ==="fuel"?"afuel":"apack",a:aid,o:oid,tmp:{}};render();drawSheet()}
 function printAreaLabels(aid){if(!window.QRCode){toast("QR-Bibliothek nicht geladen");return}const A=areas()[aid],cells=[];
   for(const o of aObjs(aid)){const tmp=document.createElement("div");new QRCode(tmp,{text:location.origin+location.pathname+"#a-"+aid+"-"+o.id,width:300,height:300,correctLevel:QRCode.CorrectLevel.M});const c=tmp.querySelector("canvas");cells.push(`<div class="l"><img src="${c.toDataURL()}" alt=""><b>${esc(o.n)}</b><small>${esc(A.n)}</small></div>`)}
@@ -858,7 +914,7 @@ async function compact(btn){
 }
 
 /* ---------- QR-Aufruf ---------- */
-function handleHash(){if(location.hash==="#admin"){tab="admin";render();return}const bm=/^#b-([a-z0-9]+)$/.exec(location.hash||"");if(bm&&CFG){area=areas()[bm[1]]?bm[1]:"san";tab=area==="san"?"home":"ahome";render();try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const am=/^#a-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(am&&CFG){openArea(am[1],am[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const m=/^#q-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(!m||!CFG)return;openSheet(m[1],m[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function handleHash(){if(location.hash==="#admin"){tab="admin";render();return}const rm=/^#r-([a-z0-9]+)$/.exec(location.hash||"");if(rm&&CFG&&CFG.bags[rm[1]]){area="san";tab="bags";bagSel=rm[1];render();openMulti(rm[1]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const bm=/^#b-([a-z0-9]+)$/.exec(location.hash||"");if(bm&&CFG){area=areas()[bm[1]]?bm[1]:"san";tab=area==="san"?"home":"ahome";render();try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const am=/^#a-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(am&&CFG){openArea(am[1],am[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}return}const m=/^#q-([a-z0-9]+)-([a-z0-9]+)$/.exec(location.hash||"");if(!m||!CFG)return;openSheet(m[1],m[2]);try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
 addEventListener("hashchange",handleHash);
 
 /* ---------- Start: Live-Verbindung ---------- */
